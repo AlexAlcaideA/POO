@@ -13,13 +13,14 @@ namespace CardGame
             Spades,
             Hearts,
             Diamonds,
-            Clubs
+            Clubs,
+            Size
         }
 
         private int num;
         private ECardType cardType;
 
-        public int NUM { get { return num; } }
+        public int Num { get { return num; } }
         public ECardType CardType { get { return cardType; } }
 
         public Card() 
