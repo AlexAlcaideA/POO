@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PokerTexasHold_em
 {
-    internal class Program
+    internal class PokerGame
     {
         static void Main(string[] args)
         {
