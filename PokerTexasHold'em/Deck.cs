@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CardGame
+namespace PokerTexasHold_em
 {
     internal class Deck
     {
@@ -24,7 +24,7 @@ namespace CardGame
         {
             for (int i = 0; i < (int)Card.ECardType.Size; i++)
             {
-                for (int j = 1; j <= 13; j++)
+                for (int j = 2; j <= 14; j++)
                 {
                     cards.Add(new Card(j, (Card.ECardType)i));
                 }
@@ -97,5 +97,22 @@ namespace CardGame
             return cards.Contains(card);
         }
 
+        public void ShowCards()
+        {
+            foreach (Card card in cards)
+            {
+                Console.WriteLine($"Carta {card.Num} de {card.CardType}");
+            }
+        }
+
+        public List<Card> GetCards()
+        {
+            return cards;
+        }
+
+        public void ClearDeck()
+        {
+            cards.Clear();
+        }
     }
 }
