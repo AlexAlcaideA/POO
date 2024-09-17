@@ -8,12 +8,12 @@ namespace CardGame
 {
     internal class BatallasDeCartas
     {
-        public static List<Deck> playersDeck = new List<Deck>();
+        public static List<Player> players = new List<Player>();
         public static Deck gameDeck = new Deck();
 
         static void Main(string[] args)
         {
-
+            GameLoop();
         }
 
         private static void GameLoop()
@@ -35,7 +35,7 @@ namespace CardGame
             
             for(int i = 0; i < playersCuantity; i++)
             {
-                playersDeck.Add(new Deck());
+                players.Add(new Player(i));
             }
 
             int playerIndex = 0;
@@ -45,7 +45,7 @@ namespace CardGame
                 Card tempCard = gameDeck.GetRandomCard();
                 gameDeck.RemoveCard(tempCard);
 
-                playersDeck[playerIndex].AddCard(tempCard);
+                players[playerIndex].PlayerHand.AddCard(tempCard);
 
                 playerIndex++;
 
@@ -53,36 +53,40 @@ namespace CardGame
                     playerIndex = 0;
             }
 
-            while (playersDeck.Count > 1)
+            while (players.Count > 1)
             {
                 List<Card> playedCards = new List<Card>();
 
-                for(int i = 0; i < playersDeck.Count; i++)
+                for(int i = 0; i < players.Count; i++)
                 {
-                    playedCards.Add(playersDeck[i].GetNextCard());
+                    playedCards.Add(players[i].PlayerHand.GetNextCard());
                 }
 
                 playedCards.Sort((card1, card2) => card2.Num.CompareTo(card1.Num));
 
-                for (int i = 0; i < playersDeck.Count; i++)
+                for (int i = 0; i < players.Count; i++)
                 {
-                    if (playersDeck[i].HasCard(playedCards[0]))
+                    if (players[i].PlayerHand.HasCard(playedCards[0]))
                     {
                         for(int j = 1; j < playedCards.Count; j++)
                         {
-                            playersDeck[i].AddCard(playedCards[j]);
+                            players[i].PlayerHand.AddCard(playedCards[j]);
                         }
                     }
                     else
                     {
                         for (int j = 0; j < playedCards.Count; j++)
                         {
-                            playersDeck[i].RemoveCard(playedCards[j]);
+                            players[i].PlayerHand.RemoveCard(playedCards[j]);
                         }
                     }
+
+                    if (players[i].PlayerHand.GetDeckCuantity() <= 0)
+                        players.Remove(players[i]);
                 }
             }
+            Console.WriteLine($"Jugador {players[0].PlayerId + 1} ha ganado");
+            Console.ReadKey();
         }
-
     }
 }
