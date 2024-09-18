@@ -40,7 +40,7 @@ namespace CardGame
 
             int playerIndex = 0;
 
-            while(gameDeck.GetDeckCuantity() > 0)
+            while(gameDeck.GetDeckQuantity() > 0)
             {
                 Card tempCard = gameDeck.GetRandomCard();
                 gameDeck.RemoveCard(tempCard);
@@ -57,33 +57,35 @@ namespace CardGame
             {
                 List<Card> playedCards = new List<Card>();
 
-                for(int i = 0; i < players.Count; i++)
+                foreach (Player player in players)
                 {
-                    playedCards.Add(players[i].PlayerHand.GetNextCard());
+                    playedCards.Add(player.PlayerHand.GetNextCard());
                 }
 
                 playedCards.Sort((card1, card2) => card2.Num.CompareTo(card1.Num));
 
-                for (int i = 0; i < players.Count; i++)
+                foreach (Player player in players)
                 {
-                    if (players[i].PlayerHand.HasCard(playedCards[0]))
+                    Card masAlta = playedCards[0];
+
+                    if (player.PlayerHand.HasCard(masAlta))
                     {
-                        for(int j = 1; j < playedCards.Count; j++)
+                        foreach (Card card in playedCards)
                         {
-                            players[i].PlayerHand.AddCard(playedCards[j]);
+                            if(!player.PlayerHand.HasCard(card))
+                                player.PlayerHand.AddCard(card);
                         }
                     }
                     else
                     {
-                        for (int j = 0; j < playedCards.Count; j++)
+                        foreach (Card card in playedCards)
                         {
-                            players[i].PlayerHand.RemoveCard(playedCards[j]);
+                            player.PlayerHand.RemoveCard(card);
                         }
                     }
-
-                    if (players[i].PlayerHand.GetDeckCuantity() <= 0)
-                        players.Remove(players[i]);
                 }
+
+                players.RemoveAll(p => p.PlayerHand.GetDeckQuantity() <= 0);
             }
             Console.WriteLine($"Jugador {players[0].PlayerId + 1} ha ganado");
             Console.ReadKey();

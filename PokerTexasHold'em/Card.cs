@@ -34,5 +34,12 @@ namespace PokerTexasHold_em
             num = _num;
             cardType = _cardType;
         }
+
+        public override string ToString()
+        {
+            string text = $@"La carta numero {num} de {cardType}";
+            return text;
+        }
+
     }
 }

@@ -28,9 +28,24 @@ namespace PokerTexasHold_em
             Count
         }
 
+        public enum eHandRankings
+        {
+            HighCard,
+            Pair,
+            TwoPair,
+            ThreeOfAKind,
+            Straight,
+            Flush,
+            FullHouse,
+            FourOfAKind,
+            StraightFlush,
+            RoyalFlush
+        }
+
         private Deck playerHand;
         private int playerId;
         private EPlayerType playerType;
+        private eHandRankings playerHandRanking;
 
         public int money;
         public int lastBet;
@@ -38,6 +53,7 @@ namespace PokerTexasHold_em
         public Deck PlayerHand { get { return playerHand; } }
         public int PlayerId { get { return playerId; } }
         public EPlayerType PlayerType { get { return playerType; } set { playerType = value; } }
+        public eHandRankings PlayerHandRanking { get; set; }
 
         public Player()
         {

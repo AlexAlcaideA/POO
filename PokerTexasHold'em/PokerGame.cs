@@ -10,6 +10,9 @@ namespace PokerTexasHold_em
     {
         static void Main(string[] args)
         {
+            Poker game = new Poker();
+
+            game.GameLoop();
         }
     }
 }

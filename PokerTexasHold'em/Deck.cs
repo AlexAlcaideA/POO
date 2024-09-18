@@ -114,5 +114,18 @@ namespace PokerTexasHold_em
         {
             cards.Clear();
         }
+
+        public override string ToString()
+        {
+            StringBuilder text = new StringBuilder();
+
+            foreach (Card card in cards)
+            {
+                text.Append(card.ToString() + "\n");
+            }
+
+            return text.ToString();
+        }
+
     }
 }

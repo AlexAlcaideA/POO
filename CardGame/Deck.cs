@@ -22,28 +22,22 @@ namespace CardGame
 
         public void InitializeDeck()
         {
-            for (int i = 0; i < (int)Card.ECardType.Size; i++)
+            foreach(Card.eCardType cardType in Enum.GetValues(typeof(Card.eCardType)))
             {
-                for (int j = 1; j <= 13; j++)
+                for (int i = 1; i <= 13; i++)
                 {
-                    cards.Add(new Card(j, (Card.ECardType)i));
+                    cards.Add(new Card(i, cardType));
                 }
             }
         }
-
-        public Card GetNextCard()
-        {
-            return cards[0];
-        }
-
         public void Shuffle()
         {
             List<Card> tempList = new List<Card>(cards);
             cards.Clear();
+            Random rnd = new Random();
 
             while(tempList.Count > 0)
             {
-                Random rnd = new Random();
                 int randomNumber = rnd.Next(0, tempList.Count);
 
                 Card randomCard = tempList[randomNumber];
@@ -51,6 +45,12 @@ namespace CardGame
                 cards.Add(randomCard);
                 tempList.Remove(randomCard);
             }
+        }
+
+
+        public Card GetNextCard()
+        {
+            return cards[0];
         }
 
         public Card GetRandomCard()
@@ -61,23 +61,15 @@ namespace CardGame
             return cards[randomNumber];
         }
 
-        public Card GetCardInPositionX()
+        public Card GetCardInPositionX(int position)
         {
-            do
-            {
-                Console.WriteLine($"Select a number between {1} and {cards.Count}");
-                int numberSelected;
+            if(position >= 0 && position < cards.Count)
+                return cards[position];
 
-                if (int.TryParse(Console.ReadLine(), out numberSelected))
-                    return cards[numberSelected];
-                else
-                    Console.WriteLine("Incorrect number");
-
-            } 
-            while (true);
+            return null;
         }
 
-        public int GetDeckCuantity()
+        public int GetDeckQuantity()
         {
             return cards.Count;
         }
