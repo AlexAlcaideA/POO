@@ -9,7 +9,7 @@ namespace PokerTexasHold_em
 {
     internal class Poker
     {
-        enum EGameState
+        enum eGameState
         {
             Start,
             PreFlop,
@@ -22,27 +22,24 @@ namespace PokerTexasHold_em
         private List<Player> players;
         private Deck tableCards;
         private Deck revealedCards;
-        private EGameState currentGameState;
+        private eGameState currentGameState;
 
         private int smallBlind;
         private int largeBlind;
         private int potMoney;
-
-        public List<Player> Players { get { return players; } }
-        public Deck TableCards { get { return tableCards; } }
 
         public Poker()
         {
             players = new List<Player>();
             tableCards = new Deck();
             revealedCards = new Deck();
-            currentGameState = EGameState.PreFlop;
+            currentGameState = eGameState.PreFlop;
 
             potMoney = 0;
 
             int numPlayers = AskNumberPlayers();
 
-            SetPlayersType(numPlayers);
+            CreatePlayers(numPlayers);
 
             tableCards.InitializeDeck();
             tableCards.Shuffle();
@@ -54,7 +51,7 @@ namespace PokerTexasHold_em
 
             do
             {
-                Console.WriteLine("Cuantos jugadores sereis siendo el minimo 2:");
+                Console.WriteLine("How many players, with the minimum being 2?");
 
                 if (int.TryParse(Console.ReadLine(), out playersNumber) && playersNumber >= 1)
                     return playersNumber;
@@ -62,12 +59,12 @@ namespace PokerTexasHold_em
             while (true);
         }
 
-        private void SetPlayersType(int numPlayers)
+        private void CreatePlayers(int numPlayers)
         {
-            for (int i = 0; i < numPlayers; i++)
+            for (int i = 1; i < numPlayers + 1; i++)
             {
                 //If there are only 2 players, we can get rid of the Bellboy
-                if (numPlayers < 3 && i == 0)
+                if (numPlayers < 3 && i == 1)
                     i++;
 
                 switch ((Player.EPlayerType)i)
@@ -88,6 +85,32 @@ namespace PokerTexasHold_em
             }
         }
 
+        private void SetPlayersType()
+        {
+            for (int i = 0; i < players.Count; i++)
+            {
+                //If there are only 2 players, we can get rid of the Bellboy
+                if (players.Count < 3 && i == 0)
+                    i++;
+
+                switch ((Player.EPlayerType)i)
+                {
+                    case Player.EPlayerType.Bellboy:
+                        players[i].PlayerType = Player.EPlayerType.Bellboy;
+                        break;
+                    case Player.EPlayerType.SmallBlind:
+                        players[i].PlayerType = Player.EPlayerType.SmallBlind;
+                        break;
+                    case Player.EPlayerType.BigBlind:
+                        players[i].PlayerType = Player.EPlayerType.BigBlind;
+                        break;
+                    default:
+                        players[i].PlayerType = Player.EPlayerType.None;
+                        break;
+                }
+            }
+        }
+
         public void GameLoop()
         {
             bool doOnce = true;
@@ -98,19 +121,17 @@ namespace PokerTexasHold_em
                 {
                     switch (currentGameState)
                     {
-                        case EGameState.Start:
+                        case eGameState.PreFlop:
                             StartBets();
-                            break;
-                        case EGameState.PreFlop:
                             GiveEachPlayerXCards();
                             break;
-                        case EGameState.Flop:
+                        case eGameState.Flop:
                             RevealXCards(3);
                             break;
-                        case EGameState.Turn:
+                        case eGameState.Turn:
                             RevealXCards(1);
                             break;
-                        case EGameState.River:
+                        case eGameState.River:
                             RevealXCards(1);
                             break;
                         //case EGameState.Showdown:
@@ -123,37 +144,32 @@ namespace PokerTexasHold_em
                     doOnce = false;
                 } 
 
-
-                ShowTable();
-
                 AskEachPlayerAction();
 
                 if (CheckConditionNextGamePhase())
                 {
-                    if(currentGameState == EGameState.Showdown)
+                    if(currentGameState == eGameState.Showdown)
                     {
                         PlayerHand(); //Sets what type of handRanking each player has
 
-                        List<Player> sortPlayers = new List<Player>();
+                        Player winningPlayer = GetWinningPlayer();
 
-                        foreach (Player p in players)
-                        {
-                            if(p.PlayerType != Player.EPlayerType.Folded)
-                                sortPlayers.Add(p);
-                        }
-
-                        sortPlayers = (List<Player>)sortPlayers.OrderByDescending(p => p.PlayerHandRanking);
-
-                        Player playerToUpdate = players.Find(p => p.Equals(sortPlayers[0]));
+                        Player playerToUpdate = players.Find(p => p.PlayerId == winningPlayer.PlayerId);
                         playerToUpdate.money += potMoney;
+
+                        ShowWinningRoundText(playerToUpdate);
+                        Console.ReadKey();
 
                         potMoney = 0;
 
-                        //Restart 
-                        currentGameState = EGameState.Start;
-                    }
+                        //Restart
+                        RestartRound();
 
-                    currentGameState++;
+                        currentGameState = eGameState.PreFlop;
+                    }
+                    else
+                        currentGameState++;
+
                     doOnce = true;
                 }   
             }
@@ -161,35 +177,55 @@ namespace PokerTexasHold_em
 
         private void StartBets()
         {
-            Player smallBlindPlayer = players.Find(player => player.PlayerType == Player.EPlayerType.SmallBlind);
-
-            smallBlind = PlayerBet(smallBlindPlayer);
-            smallBlindPlayer.lastBet = smallBlind;
-
-            Player largeBlindPlayer = players.Find(player => player.PlayerType == Player.EPlayerType.BigBlind);
-
-            largeBlind = PlayerBet(largeBlindPlayer, smallBlind * 2);
-            largeBlindPlayer.lastBet = largeBlind;
-
-            if (largeBlind <= 0)
+            while (true) 
             {
-                //Restart Round, remember to reset the player type from folder to another
+                Player smallBlindPlayer = players.Find(player => player.PlayerType == Player.EPlayerType.SmallBlind);
+
+                Console.WriteLine("Bet small blind:");
+
+                smallBlind = PlayerBet(smallBlindPlayer);
+                smallBlindPlayer.lastBet = smallBlind;
+
+                Player largeBlindPlayer = players.Find(player => player.PlayerType == Player.EPlayerType.BigBlind);
+
+                largeBlind = PlayerBet(largeBlindPlayer, smallBlind * 2);
+                largeBlindPlayer.lastBet = largeBlind;
+
+                if (largeBlind <= 0)
+                    RestartRound();
+                else
+                    break;
             }
-            else
-                currentGameState++;
         }
 
         private void ShowTable()
         {
+            Console.Clear();
+
+            Console.WriteLine($@"
+Current game state: {currentGameState}
+Money in the pot: {potMoney}
+Minimum bet: {largeBlind}");
+
             ShowRevealedCards();
-            ShowPlayersHands();
+            ShowPlayersInfo();
         }
 
-        private void ShowPlayersHands()
+        private void ShowPlayersInfo()
         {
             foreach (Player player in players)
             {
-                Console.WriteLine(player.PlayerHand.ToString());
+                string playerState = "Playing";
+
+                if (player.PlayerType == Player.EPlayerType.Folded)
+                    playerState = "Folded";
+
+                Console.WriteLine($@"
+Player: {player.PlayerId}
+Player state: {playerState}
+Player action: {player.PlayerAction}
+Player money: {player.money}
+{player.PlayerHand.ToString()}"); //Shows action of the player state, players money and cards 
             }
         }
 
@@ -200,22 +236,27 @@ namespace PokerTexasHold_em
 
         private void AskEachPlayerAction()
         {
+            ResetPlayersActions();
+
             foreach (Player player in players)
             {
-                Player.EPlayerAction playerAction = player.PlayerAction();
+                ShowTable();
 
                 if(player.PlayerType != Player.EPlayerType.Folded)
                 {
+                    Player.ePlayerAction playerAction = player.PlayerSelectAction();
+                    player.PlayerAction = playerAction;
+
                     switch (playerAction)
                     {
-                        case Player.EPlayerAction.Fold:
+                        case Player.ePlayerAction.Fold:
                             player.PlayerType = Player.EPlayerType.Folded;
                             break;
-                        case Player.EPlayerAction.Call:
+                        case Player.ePlayerAction.Call:
                             if(PlayerCall(player) == 0)
                                 player.PlayerType = Player.EPlayerType.Folded;
                             break;
-                        case Player.EPlayerAction.Raise:
+                        case Player.ePlayerAction.Raise:
                             //If player can't really Raise
                             if(PlayerRaise(player) == 0)
                             {
@@ -234,6 +275,15 @@ namespace PokerTexasHold_em
             }
         }
 
+        private void ResetPlayersActions()
+        {
+            foreach(Player player in players)
+            {
+                player.PlayerAction = Player.ePlayerAction.None;
+            }
+        }
+
+
         private int PlayerBet(Player player, int moneyMustBet = 0)
         {
             int moneyBet = 0;
@@ -244,7 +294,9 @@ namespace PokerTexasHold_em
             {
                 do
                 {
-                    Console.WriteLine("Decide cuanto apostar:");
+                    Console.WriteLine($@"
+Player money: {player.money}
+Choose what to bet:");
 
                     if (int.TryParse(Console.ReadLine(), out moneyBet) && moneyBet <= 50 && moneyBet > 0 && moneyBet <= player.money)
                         break;
@@ -277,7 +329,9 @@ namespace PokerTexasHold_em
 
             do
             {
-                Console.WriteLine("Decide a cuanto subir la apuesta:");
+                Console.WriteLine($@"
+Player money: {player.money}
+How mmuch to bet:");
 
                 if (int.TryParse(Console.ReadLine(), out moneyRaise) && moneyRaise > largeBlind)
                     break;
@@ -335,31 +389,33 @@ namespace PokerTexasHold_em
         {
             foreach (Player player in players)
             {
-                if (RoyalFlush(player.PlayerHand.GetCards()))
+                if (RoyalFlush(player))
                     player.PlayerHandRanking = Player.eHandRankings.RoyalFlush;
-                else if (IsStraightFlush(player.PlayerHand.GetCards()))
+                else if (IsStraightFlush(player))
                     player.PlayerHandRanking = Player.eHandRankings.StraightFlush;
-                else if (IsFourOfAKind(player.PlayerHand.GetCards()))
+                else if (IsFourOfAKind(player))
                     player.PlayerHandRanking = Player.eHandRankings.FourOfAKind;
-                else if (IsFullHouse(player.PlayerHand.GetCards()))
+                else if (IsFullHouse(player))
                     player.PlayerHandRanking = Player.eHandRankings.FullHouse;
-                else if (IsFlush(player.PlayerHand.GetCards()))
+                else if (IsFlush(player))
                     player.PlayerHandRanking = Player.eHandRankings.Flush;
-                else if (IsStraight(player.PlayerHand.GetCards()))
+                else if (IsStraight(player))
                     player.PlayerHandRanking = Player.eHandRankings.Straight;
-                else if (IsThreeOfAKind(player.PlayerHand.GetCards()))
+                else if (IsThreeOfAKind(player))
                     player.PlayerHandRanking = Player.eHandRankings.ThreeOfAKind;
-                else if (IsTwoPair(player.PlayerHand.GetCards()))
+                else if (IsTwoPair(player))
                     player.PlayerHandRanking = Player.eHandRankings.TwoPair;
-                else if (IsPair(player.PlayerHand.GetCards()))
+                else if (IsPair(player))
                     player.PlayerHandRanking = Player.eHandRankings.Pair;
                 else
                     player.PlayerHandRanking = Player.eHandRankings.HighCard;
             }
         }
 
-        private bool RoyalFlush(List<Card> playerHand)
+        private bool RoyalFlush(Player player)
         {
+            List<Card> playerHand = player.GetCards();
+
             // Agregar las cartas reveladas a la mano del jugador
             List<Card> allCards = new List<Card>(playerHand);
             allCards.AddRange(revealedCards.GetCards());
@@ -379,16 +435,23 @@ namespace PokerTexasHold_em
                     List<int> cardValues = group.Select(c => c.Num).OrderBy(v => v).ToList();
 
                     // Verificar si los valores de las cartas forman un Royal Flush y si al menos una carta es de la mano del jugador
-                    if (royalFlushValues.All(v => cardValues.Contains(v)) && group.Any(cardPlayer => playerHand.Contains(cardPlayer)))
+                    if (royalFlushValues.All(v => cardValues.Contains(v)) && 
+                        group.Any(cardPlayer => playerHand.Contains(cardPlayer)))
+                    {
+                        player.PlayerStrongestCard.Add(GetHighestCard(group.ToList()).Num);
                         return true; // Si encontramos un Royal Flush, devolvemos true
+                    }
+                        
                 }
             }
 
-            return false; // Si no se encuentra ningún Royal Flush
+            return false;
         }
 
-        public bool IsStraightFlush(List<Card> playerHand)
+        public bool IsStraightFlush(Player player)
         {
+            List<Card> playerHand = player.GetCards();
+
             List<Card> sortCards = new List<Card>(playerHand);
             
             sortCards.AddRange(revealedCards.GetCards());
@@ -435,13 +498,20 @@ namespace PokerTexasHold_em
 
             //if (!esFlush)
             //    return false;
-
-            return consecutiveCardsList.Any(cardPlayer => playerHand.Contains(cardPlayer)) && 
-                (consecutiveCardsNumber >= 5 || isLowStraight);
+            if(consecutiveCardsList.Any(cardPlayer => playerHand.Contains(cardPlayer)) &&
+                (consecutiveCardsNumber >= 5 || isLowStraight))
+            {
+                player.PlayerStrongestCard.Add(GetHighestCard(consecutiveCardsList.ToList()).Num);
+                return true;
+            }
+            else
+                return false;
         }
 
-        private bool IsFourOfAKind(List<Card> playerHand)
+        private bool IsFourOfAKind(Player player)
         {
+            List<Card> playerHand = player.GetCards();
+
             List<Card> sortCards = new List<Card>(playerHand);
 
             sortCards.AddRange(revealedCards.GetCards());
@@ -470,15 +540,21 @@ namespace PokerTexasHold_em
                     consecutiveCardsNumber = 1; // Si no es consecutiva, reiniciamos el contador
                 }
 
-                if (consecutiveCardsNumber >= 4 && consecutiveCardsList.Any(cardPlayer => playerHand.Contains(cardPlayer)))
+                if (consecutiveCardsNumber >= 4 && 
+                    consecutiveCardsList.Any(cardPlayer => playerHand.Contains(cardPlayer)))
+                {
+                    player.PlayerStrongestCard.Add(GetHighestCard(consecutiveCardsList.ToList()).Num);
                     return true;
+                }
             }
 
             return false;
         }
 
-        private bool IsFullHouse(List<Card> playerHand)
+        private bool IsFullHouse(Player player)
         {
+            List<Card> playerHand = player.GetCards();
+
             // Agregar las cartas reveladas a la mano del jugador
             List<Card> allCards = new List<Card>(playerHand);
             allCards.AddRange(revealedCards.GetCards());
@@ -497,6 +573,8 @@ namespace PokerTexasHold_em
                 {
                     thereIsTrio = true;
 
+                    player.PlayerStrongestCard.Add(GetHighestCard(group.ToList()).Num);
+
                     if (group.Any(cardPlayer => playerHand.Contains(cardPlayer)))
                         containsPlayerCard = true;
                 }
@@ -504,16 +582,26 @@ namespace PokerTexasHold_em
                 {
                     thereIsDuo = true;
 
+                    player.PlayerStrongestCard.Add(GetHighestCard(group.ToList()).Num);
+
                     if (group.Any(cardPlayer => playerHand.Contains(cardPlayer)))
                         containsPlayerCard = true;
                 }
             }
 
-            return thereIsDuo && thereIsTrio && containsPlayerCard;
+            if(thereIsDuo && thereIsTrio && containsPlayerCard)
+                return true;
+            else
+            {
+                player.PlayerStrongestCard.Clear();
+                return false;
+            }
         }
 
-        private bool IsFlush(List<Card> playerHand)
+        private bool IsFlush(Player player)
         {
+            List<Card> playerHand = player.GetCards();
+
             // Agregar las cartas reveladas a la mano del jugador
             List<Card> allCards = new List<Card>(playerHand);
             allCards.AddRange(revealedCards.GetCards());
@@ -525,14 +613,19 @@ namespace PokerTexasHold_em
             foreach (var group in groupedBySuit)
             {
                 if (group.Count() >= 5 && group.Any(cardPlayer => playerHand.Contains(cardPlayer)))
+                {
+                    player.PlayerStrongestCard.Add(GetHighestCard(group.ToList()).Num);
                     return true;
+                }   
             }
 
             return false;
         }
 
-        private bool IsStraight(List<Card> playerHand)
+        private bool IsStraight(Player player)
         {
+            List<Card> playerHand = player.GetCards();
+
             // Agregar las cartas reveladas a la mano del jugador
             List<Card> allCards = new List<Card>(playerHand);
             allCards.AddRange(revealedCards.GetCards());
@@ -561,15 +654,22 @@ namespace PokerTexasHold_em
                     consecutiveCardsNumber = 1; // Si no es consecutiva, reiniciamos el contador
                 }
 
-                if (consecutiveCardsNumber >= 5 && consecutiveCardsList.Any(cardPlayer => playerHand.Contains(cardPlayer)))
+                if (consecutiveCardsNumber >= 5 && 
+                    consecutiveCardsList.Any(cardPlayer => playerHand.Contains(cardPlayer)))
+                {
+                    player.PlayerStrongestCard.Add(GetHighestCard(consecutiveCardsList).Num);
                     return true;
+                }
+                    
             }
 
             return false;
         }
 
-        private bool IsThreeOfAKind(List<Card> playerHand)
+        private bool IsThreeOfAKind(Player player)
         {
+            List<Card> playerHand = player.GetCards();
+
             // Agregar las cartas reveladas a la mano del jugador
             List<Card> allCards = new List<Card>(playerHand);
             allCards.AddRange(revealedCards.GetCards());
@@ -580,14 +680,19 @@ namespace PokerTexasHold_em
             foreach (var group in groupedByNum)
             {
                 if (group.Count() == 3 && group.Any(cardPlayer => playerHand.Contains(cardPlayer)))
+                {
+                    player.PlayerStrongestCard.Add(GetHighestCard(group.ToList()).Num);
                     return true;
+                }  
             }
 
             return false;
         }
 
-        private bool IsTwoPair(List<Card> playerHand)
+        private bool IsTwoPair(Player player)
         {
+            List<Card> playerHand = player.GetCards();
+
             // Agregar las cartas reveladas a la mano del jugador
             List<Card> allCards = new List<Card>(playerHand);
             allCards.AddRange(revealedCards.GetCards());
@@ -606,15 +711,28 @@ namespace PokerTexasHold_em
                     numberOfPairGroups++;
 
                     if (group.Any(cardPlayer => playerHand.Contains(cardPlayer)))
+                    {
+                        player.PlayerStrongestCard.Add(GetHighestCard(group.ToList()).Num);
                         hasPlayerHands = true;
+                    }
+                        
                 }
             }
 
-            return numberOfPairGroups >= 2 && hasPlayerHands;
+            if(numberOfPairGroups >= 2 && hasPlayerHands)
+                return true;
+            else
+            {
+                player.PlayerStrongestCard.Clear();
+                return false;
+            }
+                
         }
 
-        private bool IsPair(List<Card> playerHand)
+        private bool IsPair(Player player)
         {
+            List<Card> playerHand = player.GetCards();
+
             // Agregar las cartas reveladas a la mano del jugador
             List<Card> allCards = new List<Card>(playerHand);
             allCards.AddRange(revealedCards.GetCards());
@@ -625,10 +743,98 @@ namespace PokerTexasHold_em
             foreach (var group in groupedByNum)
             {
                 if (group.Count() == 2 && group.Any(cardPlayer => playerHand.Contains(cardPlayer)))
+                {
+                    player.PlayerStrongestCard.Add(GetHighestCard(group.ToList()).Num);
                     return true;
+                }   
             }
 
             return false;
         }
+
+        private Card GetHighestCard(List<Card> cards)
+        {
+            cards = cards.OrderByDescending(c => c.Num).ToList();
+
+            return cards[0];
+        }
+
+        private Player GetWinningPlayer()
+        {
+            List<Player> sortPlayers = new List<Player>();
+
+            foreach (Player p in players)
+            {
+                if (p.PlayerType != Player.EPlayerType.Folded)
+                    sortPlayers.Add(p);
+            }
+
+            sortPlayers = sortPlayers
+            .OrderByDescending(p => p.PlayerHandRanking)
+            .ThenByDescending(p => p.PlayerStrongestCard, Comparer<List<int>>.Create((list1, list2) =>
+            {
+                // Comparar los elementos de las listas uno por uno
+                for (int i = 0; i < Math.Min(list1.Count, list2.Count); i++)
+                {
+                    int comparison = list1[i].CompareTo(list2[i]);
+                    if (comparison != 0)
+                        return comparison; // Si hay un desempate, devolver el resultado de la comparación
+                }
+                return list1.Count.CompareTo(list2.Count); // Si todos los elementos son iguales, comparar por longitud
+            }))
+            .ToList();
+
+            return sortPlayers[0];
+        }
+
+        private void ShowWinningRoundText(Player winner)
+        {
+            Console.WriteLine($"Player {winner.PlayerId} has won: {potMoney}");
+        }
+
+        private void RestartRound()
+        {
+            players.RemoveAll(player => player.money <= 0);
+
+            MovePlayersList();
+            ResetPlayerType();
+            ResetPlayersDeck();
+            ResetDeck();
+            SetPlayersType();
+        }
+
+        private void MovePlayersList()
+        {
+            Player tempPlayer = players[0];
+
+            players.Remove(tempPlayer);
+            players.Add(tempPlayer);
+        }
+
+        private void ResetPlayerType()
+        {
+            foreach (Player p in players)
+            {
+                p.PlayerType = Player.EPlayerType.None;
+            }
+        }
+
+        private void ResetPlayersDeck()
+        {
+            foreach (Player p in players)
+            {
+                p.ClearDeck();
+            }
+        }
+
+        private void ResetDeck()
+        {
+            tableCards.ClearDeck();
+            tableCards.InitializeDeck();
+            tableCards.Shuffle();
+
+            revealedCards.ClearDeck();
+        }
+
     }
 }

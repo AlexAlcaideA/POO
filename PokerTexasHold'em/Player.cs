@@ -18,14 +18,14 @@ namespace PokerTexasHold_em
             Count
         }
 
-        public enum EPlayerAction
+        public enum ePlayerAction
         {
             Fold,
             Call,
             Raise,
             Bet,
             Check,
-            Count
+            None
         }
 
         public enum eHandRankings
@@ -46,14 +46,18 @@ namespace PokerTexasHold_em
         private int playerId;
         private EPlayerType playerType;
         private eHandRankings playerHandRanking;
+        private ePlayerAction playerAction;
+        private short playerStrongestCard;
 
         public int money;
         public int lastBet;
 
-        public Deck PlayerHand { get { return playerHand; } }
+        public Deck PlayerHand { get; }
         public int PlayerId { get { return playerId; } }
         public EPlayerType PlayerType { get { return playerType; } set { playerType = value; } }
         public eHandRankings PlayerHandRanking { get; set; }
+        public ePlayerAction PlayerAction { get; set; }
+        public List<int> PlayerStrongestCard { get; set; } //In case of draw this value tells who has the higher value
 
         public Player()
         {
@@ -66,6 +70,7 @@ namespace PokerTexasHold_em
             playerId = _playerId;
             playerHand = new Deck();
             playerType = _playerType;
+            playerAction = ePlayerAction.None;
             money = 100;
         }
 
@@ -76,9 +81,9 @@ namespace PokerTexasHold_em
             money = 100;
         }
 
-        public EPlayerAction PlayerAction()
+        public ePlayerAction PlayerSelectAction()
         {
-            EPlayerAction playerAction;
+            ePlayerAction selectedPlayerAction;
 
             while (true)
             {
@@ -88,11 +93,22 @@ Que quieres hacer jugador {playerId}:
 2) Igualar apuesta
 3) Subir apuesta");
 
-                if (Enum.TryParse(Console.ReadLine(), out playerAction) && (int)playerAction > 0 && (int)playerAction < 4)
+                if (Enum.TryParse(Console.ReadLine(), out selectedPlayerAction) && (int)selectedPlayerAction > 0 && (int)selectedPlayerAction < 4)
                     break;
             }
 
-            return --playerAction;
+            return --selectedPlayerAction;
         }
+
+        public List<Card> GetCards()
+        {
+            return playerHand.GetCards();
+        }
+
+        public void ClearDeck()
+        {
+            playerHand.ClearDeck();
+        }
+
     }
 }

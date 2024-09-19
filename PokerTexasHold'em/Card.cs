@@ -8,7 +8,7 @@ namespace PokerTexasHold_em
 {
     internal class Card
     {
-        public enum ECardType
+        public enum eCardType
         {
             Spades,
             Hearts,
@@ -18,18 +18,18 @@ namespace PokerTexasHold_em
         }
 
         private int num;
-        private ECardType cardType;
+        private eCardType cardType;
 
-        public int Num { get { return num; } }
-        public ECardType CardType { get { return cardType; } }
+        public int Num { get; }
+        public eCardType CardType { get; }
 
         public Card() 
         { 
             num = 0;
-            cardType = ECardType.Spades;
+            cardType = eCardType.Spades;
         }
 
-        public Card(int _num, ECardType _cardType)
+        public Card(int _num, eCardType _cardType)
         {
             num = _num;
             cardType = _cardType;
@@ -37,7 +37,7 @@ namespace PokerTexasHold_em
 
         public override string ToString()
         {
-            string text = $@"La carta numero {num} de {cardType}";
+            string text = $@"Card number {num} of {cardType}";
             return text;
         }
 

@@ -22,11 +22,11 @@ namespace PokerTexasHold_em
 
         public void InitializeDeck()
         {
-            for (int i = 0; i < (int)Card.ECardType.Size; i++)
+            for (int i = 0; i < (int)Card.eCardType.Size; i++)
             {
                 for (int j = 2; j <= 14; j++)
                 {
-                    cards.Add(new Card(j, (Card.ECardType)i));
+                    cards.Add(new Card(j, (Card.eCardType)i));
                 }
             }
         }
@@ -41,9 +41,10 @@ namespace PokerTexasHold_em
             List<Card> tempList = new List<Card>(cards);
             cards.Clear();
 
-            while(tempList.Count > 0)
+            Random rnd = new Random();
+
+            while (tempList.Count > 0)
             {
-                Random rnd = new Random();
                 int randomNumber = rnd.Next(0, tempList.Count);
 
                 Card randomCard = tempList[randomNumber];
