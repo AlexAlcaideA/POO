@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Formas
 {
-    internal class Rombo : Poligonos
+    internal class Rombo : Poligono
     {
         private double diagonalMen;
         private double diagonalMay;

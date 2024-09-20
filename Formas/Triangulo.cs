@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Formas
 {
-    internal class Triangulo : Poligonos
+    internal class Triangulo : Poligono
     {
         private double baseTri;
         private double alturaTri;

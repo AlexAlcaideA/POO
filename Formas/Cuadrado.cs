@@ -10,19 +10,6 @@ namespace Formas
     {
         public Cuadrado() { }
 
-        public Cuadrado(double lado) : base()
-        {
-            baseRect = lado;
-        }
-
-        public override double CalcularArea()
-        {
-            return Math.Pow(baseRect, 2);
-        }
-
-        public override double CalcularPerimetro()
-        {
-            return numLados * baseRect;
-        }
+        public Cuadrado(double lado) : base(lado, lado) { }
     }
 }

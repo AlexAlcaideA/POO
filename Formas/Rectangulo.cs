@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Formas
 {
-    internal class Rectangulo : Poligonos
+    internal class Rectangulo : Poligono
     {
         protected double baseRect;
         protected double alturaRect;
