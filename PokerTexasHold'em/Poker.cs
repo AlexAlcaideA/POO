@@ -65,22 +65,40 @@ namespace PokerTexasHold_em
             {
                 //If there are only 2 players, we can get rid of the Bellboy
                 if (numPlayers < 3 && i == 1)
-                    i++;
-
-                switch ((Player.EPlayerType)i)
                 {
-                    case Player.EPlayerType.Bellboy:
-                        players.Add(new Player(i, Player.EPlayerType.Bellboy));
-                        break;
-                    case Player.EPlayerType.SmallBlind:
-                        players.Add(new Player(i, Player.EPlayerType.SmallBlind));
-                        break;
-                    case Player.EPlayerType.BigBlind:
-                        players.Add(new Player(i, Player.EPlayerType.BigBlind));
-                        break;
-                    default:
-                        players.Add(new Player(i));
-                        break;
+                    switch ((Player.EPlayerType)i)
+                    {
+                        case Player.EPlayerType.Bellboy:
+                            players.Add(new Player(i, Player.EPlayerType.Bellboy));
+                            break;
+                        case Player.EPlayerType.SmallBlind:
+                            players.Add(new Player(i, Player.EPlayerType.SmallBlind));
+                            break;
+                        case Player.EPlayerType.BigBlind:
+                            players.Add(new Player(i, Player.EPlayerType.BigBlind));
+                            break;
+                        default:
+                            players.Add(new Player(i));
+                            break;
+                    }
+                }
+                else
+                {
+                    switch ((Player.EPlayerType)i - 1)
+                    {
+                        case Player.EPlayerType.Bellboy:
+                            players.Add(new Player(i, Player.EPlayerType.Bellboy));
+                            break;
+                        case Player.EPlayerType.SmallBlind:
+                            players.Add(new Player(i, Player.EPlayerType.SmallBlind));
+                            break;
+                        case Player.EPlayerType.BigBlind:
+                            players.Add(new Player(i, Player.EPlayerType.BigBlind));
+                            break;
+                        default:
+                            players.Add(new Player(i));
+                            break;
+                    }
                 }
             }
         }
@@ -225,7 +243,7 @@ Player: {player.PlayerId}
 Player state: {playerState}
 Player action: {player.PlayerAction}
 Player money: {player.money}
-{player.PlayerHand.ToString()}"); //Shows action of the player state, players money and cards 
+{player.PlayerHandToArray()}"); //Shows action of the player state, players money and cards 
             }
         }
 
@@ -358,7 +376,7 @@ How mmuch to bet:");
                 {
                     Card selectedCard = tableCards.GetNextCard();
 
-                    player.PlayerHand.AddCard(selectedCard);
+                    player.DeckAddCard(selectedCard);
                     tableCards.RemoveCard(selectedCard);
                 }
             }

@@ -105,10 +105,35 @@ Que quieres hacer jugador {playerId}:
             return playerHand.GetCards();
         }
 
+        public void DeckAddCard(Card card)
+        {
+            playerHand.AddCard(card);
+        }
+
         public void ClearDeck()
         {
             playerHand.ClearDeck();
         }
+
+        public string PlayerHandToArray()
+        {
+            return playerHand.ToString();
+        }
+
+//        public override string ToString()
+//        {
+//            string playerState = "Playing";
+
+//            if (playerType == Player.EPlayerType.Folded)
+//                playerState = "Folded";
+
+//            Console.WriteLine($@"
+//Player: {playerId}
+//Player state: {playerState}
+//Player action: {playerAction}
+//Player money: {money}
+//{playerHand.ToString()}"); //Shows action of the player state, players money and cards 
+//        }
 
     }
 }
