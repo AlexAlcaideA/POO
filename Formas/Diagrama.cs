@@ -8,7 +8,7 @@ namespace Formas
 {
     internal class Diagrama
     {
-        enum eTiposFormas
+        public enum eTiposFormas
         {
             Rectangulo,
             Cuadrado,
@@ -21,7 +21,10 @@ namespace Formas
 
         private List<Forma2D> figuras;
 
-        public Diagrama() { }
+        public Diagrama() 
+        { 
+            figuras = new List<Forma2D>();
+        }
         public Diagrama(int numFiguras) 
         { 
             figuras = new List<Forma2D>();
@@ -66,6 +69,153 @@ namespace Formas
                         break;
                 }
             }
+        }
+
+        public void PreguntarPorFormas()
+        {
+            do
+            {
+                Console.Clear();
+
+                eTiposFormas formaSeleccionada;
+
+                Console.WriteLine(@"
+Para salir por '*'
+Elige que figura añadir a la lista:
+1)Rectangulo
+2)Cuadrado,
+3)Circulo,
+4)Elipse,
+5)Triangulo,
+6)Octagono,
+7)Rombo
+");
+
+                string textoLeido = Console.ReadLine();
+
+                if(textoLeido == "*")
+                    break;
+                else if (!Enum.TryParse(textoLeido, out formaSeleccionada))
+                    continue;
+
+                List<double> valoresLista = new List<double>();
+
+                switch (--formaSeleccionada)
+                {
+                    case eTiposFormas.Rectangulo:
+                        Console.WriteLine("Escribe la base y la altura: Ej: 5,8");
+                        valoresLista = RecogerValoresLeidos(Console.ReadLine(), 2);
+
+                        if(valoresLista == null)
+                            continue;
+
+                        Rectangulo rectangulo = new Rectangulo(valoresLista[0], valoresLista[1]);
+                        AddFiguras(rectangulo);
+                        break;
+                    case eTiposFormas.Cuadrado:
+                        Console.WriteLine("Escribe la base y la altura: Ej: 5");
+                        valoresLista = RecogerValoresLeidos(Console.ReadLine(), 1);
+
+                        if (valoresLista == null)
+                            continue;
+
+                        Cuadrado cuadrado = new Cuadrado(valoresLista[0]);
+                        AddFiguras(cuadrado);
+                        break;
+                    case eTiposFormas.Circulo:
+                        Console.WriteLine("Escribe el radio: Ej: 5");
+                        valoresLista = RecogerValoresLeidos(Console.ReadLine(), 1);
+
+                        if (valoresLista == null)
+                            continue;
+
+                        Circulo circulo = new Circulo(valoresLista[0]);
+                        AddFiguras(circulo);
+                        break;
+                    case eTiposFormas.Elipse:
+                        Console.WriteLine("Escribe el radio mayor y menor: Ej: 5,8");
+                        valoresLista = RecogerValoresLeidos(Console.ReadLine(), 2);
+
+                        if (valoresLista == null)
+                            continue;
+
+                        Elipse elipse = new Elipse(valoresLista[0], valoresLista[1]);
+                        AddFiguras(elipse);
+                        break;
+                    case eTiposFormas.Triangulo:
+                        Console.WriteLine("Escribe la base, la altura y el angulo: Ej: 5,8,60");
+                        valoresLista = RecogerValoresLeidos(Console.ReadLine(), 3);
+
+                        if (valoresLista == null)
+                            continue;
+
+                        Triangulo triangulo = new Triangulo(valoresLista[0], valoresLista[1], valoresLista[2]);
+                        AddFiguras(triangulo);
+                        break;
+                    case eTiposFormas.Octagono:
+                        Console.WriteLine("Escribe el tamaño del lado: Ej: 8");
+                        valoresLista = RecogerValoresLeidos(Console.ReadLine(), 1);
+
+                        if (valoresLista == null)
+                            continue;
+
+                        Octagono octagono = new Octagono(valoresLista[0]);
+                        AddFiguras(octagono);
+                        break;
+                    case eTiposFormas.Rombo:
+                        Console.WriteLine("Escribe la diagonal mayor y la diagonal menor: Ej: 5,8");
+                        valoresLista = RecogerValoresLeidos(Console.ReadLine(), 2);
+
+                        if (valoresLista == null)
+                            continue;
+
+                        Rombo rombo = new Rombo(valoresLista[0], valoresLista[1]);
+                        AddFiguras(rombo);
+                        break;
+                }
+            }
+            while (true);
+        }
+
+        private List<Double> RecogerValoresLeidos(string valores, int numValores)
+        {
+            string[] listaDeTextos = valores.Split(',');
+            List<Double> listaValores = new List<Double>();
+
+            if (numValores != listaDeTextos.Length)
+                return null;
+
+            foreach (string str in listaDeTextos)
+            {
+                double valor;
+
+                if (double.TryParse(str, out valor))
+                    listaValores.Add(valor);
+                else
+                    break;
+            }
+
+            if (numValores != listaValores.Count)
+                return null;
+
+            return listaValores;
+        }
+
+        public void AddFiguras(Forma2D forma2D)
+        {
+            figuras.Add(forma2D);
+        }
+
+        public double CalculaAreaTotal()
+        {
+            double areaTotal = 0;
+
+            foreach(Forma2D forma2D in figuras)
+            {
+                areaTotal += forma2D.CalcularArea();
+            }
+
+            return areaTotal;
         }
 
         public override string ToString()

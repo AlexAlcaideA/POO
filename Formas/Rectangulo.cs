@@ -11,7 +11,7 @@ namespace Formas
         protected double baseRect;
         protected double alturaRect;
 
-        public Rectangulo() : base(4) { }
+        public Rectangulo() { }
 
         public Rectangulo(double baseRect, double alturaRect) : base(4)
         {

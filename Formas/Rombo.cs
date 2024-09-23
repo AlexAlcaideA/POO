@@ -13,7 +13,7 @@ namespace Formas
 
         public Rombo() { }
 
-        public Rombo(float diagonal1, float diagonal2) : base(4)
+        public Rombo(double diagonal1, double diagonal2) : base(4)
         {
             diagonalMen = diagonal1;
             diagonalMay = diagonal2;

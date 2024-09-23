@@ -10,9 +10,13 @@ namespace Formas
     {
         static void Main(string[] args)
         {
-            Diagrama diagrama = new Diagrama(10);
+            Diagrama diagrama = new Diagrama();
 
-            Console.WriteLine(diagrama.ToString());
+            diagrama.PreguntarPorFormas();
+
+            Console.WriteLine($@"
+{diagrama.ToString()}
+El area total es: {diagrama.CalculaAreaTotal()}");
             Console.ReadKey();
         }
     }
