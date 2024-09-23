@@ -21,7 +21,7 @@ namespace Formas
 
         public override double CalcularArea()
         {
-            return diagonalMen * diagonalMay;
+            return (diagonalMen * diagonalMay) / 2;
         }
 
         public override double CalcularPerimetro()
