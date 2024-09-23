@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Formas
 {
-    abstract class Formas2D
+    abstract class Forma2D
     {
         public abstract double CalcularArea();
         public abstract double CalcularPerimetro();

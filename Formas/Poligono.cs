@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace Formas
 {
-    abstract class Poligonos : Formas2D
+    abstract class Poligono : Forma2D
     {
         protected int numLados;
 
-        protected Poligonos() { }
+        protected Poligono() { }
 
-        protected Poligonos(int numLados)
+        protected Poligono(int numLados)
         {
             this.numLados = numLados;
         }

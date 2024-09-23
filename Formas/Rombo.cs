@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace Formas
 {
-    internal class Rombo : Poligonos
+    internal class Rombo : Poligono
     {
         private double diagonalMen;
         private double diagonalMay;
 
         public Rombo() { }
 
-        public Rombo(float diagonal1, float diagonal2) : base(4)
+        public Rombo(double diagonal1, double diagonal2) : base(4)
         {
             diagonalMen = diagonal1;
             diagonalMay = diagonal2;
@@ -21,7 +21,7 @@ namespace Formas
 
         public override double CalcularArea()
         {
-            return diagonalMen * diagonalMay;
+            return (diagonalMen * diagonalMay) / 2;
         }
 
         public override double CalcularPerimetro()

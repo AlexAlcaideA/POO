@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace Formas
 {
-    internal class Elipses : Formas2D
+    internal class Elipse : Forma2D
     {
         protected double r1;
         protected double r2;
 
-        public Elipses() { }
-        public Elipses(double r1, double r2)
+        public Elipse() { }
+        public Elipse(double r1, double r2)
         {
             this.r1 = r1;
             this.r2 = r2;

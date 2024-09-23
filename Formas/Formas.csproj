@@ -45,10 +45,11 @@
   <ItemGroup>
     <Compile Include="Circulo.cs" />
     <Compile Include="Cuadrado.cs" />
-    <Compile Include="Elipses.cs" />
-    <Compile Include="Formas2D.cs" />
+    <Compile Include="Diagrama.cs" />
+    <Compile Include="Elipse.cs" />
+    <Compile Include="Forma2D.cs" />
     <Compile Include="Octagono.cs" />
-    <Compile Include="Poligonos.cs" />
+    <Compile Include="Poligono.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rectangulo.cs" />
