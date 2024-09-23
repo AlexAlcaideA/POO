@@ -10,13 +10,13 @@ namespace Formas
     {
         public enum eTiposFormas
         {
-            Rectangulo,
-            Cuadrado,
-            Circulo,
-            Elipse,
-            Triangulo,
-            Octagono,
-            Rombo
+            Rectangulo = 1,
+            Cuadrado = 2,
+            Circulo = 3,
+            Elipse = 4,
+            Triangulo = 5,
+            Octagono = 6,
+            Rombo = 7
         }
 
         private List<Forma2D> figuras;
@@ -25,9 +25,8 @@ namespace Formas
         { 
             figuras = new List<Forma2D>();
         }
-        public Diagrama(int numFiguras) 
+        public Diagrama(int numFiguras) : this()
         { 
-            figuras = new List<Forma2D>();
             CrearFormas(numFiguras);
         }
 
@@ -39,8 +38,8 @@ namespace Formas
             {
                 eTiposFormas tipoForma = (eTiposFormas)rnd.Next(0, Enum.GetValues(typeof(eTiposFormas)).Length);
 
-                int value1 = rnd.Next(0, 101);
-                int value2 = rnd.Next(0, 101);
+                int value1 = rnd.Next(1, 101);
+                int value2 = rnd.Next(1, 101);
 
                 switch (tipoForma)
                 {
@@ -57,7 +56,7 @@ namespace Formas
                         figuras.Add(new Elipse(value1, value2));
                         break;
                     case eTiposFormas.Triangulo:
-                        int angulo = rnd.Next(0, 160);
+                        int angulo = rnd.Next(1, 160);
 
                         figuras.Add(new Triangulo(value1, value2, angulo));
                         break;
@@ -108,7 +107,7 @@ Elige que figura añadir a la lista:
         {
             List<double> valoresLista = new List<double>();
 
-            switch (--tiposFormas)
+            switch (tiposFormas)
             {
                 case eTiposFormas.Rectangulo:
                     Console.WriteLine("Escribe la base y la altura: Ej: 5,8");
@@ -197,7 +196,7 @@ Elige que figura añadir a la lista:
             {
                 double valor;
 
-                if (double.TryParse(str, out valor))
+                if (double.TryParse(str, out valor) && valor > 0)
                     listaValores.Add(valor);
                 else
                     break;
@@ -218,9 +217,9 @@ Elige que figura añadir a la lista:
         {
             double areaTotal = 0;
 
-            foreach(Forma2D forma2D in figuras)
+            foreach(Forma2D f in figuras)
             {
-                areaTotal += forma2D.CalcularArea();
+                areaTotal += f.CalcularArea();
             }
 
             return areaTotal;
