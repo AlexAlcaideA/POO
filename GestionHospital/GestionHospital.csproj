@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="Medico.cs" />
     <Compile Include="Hospital.cs" />
+    <Compile Include="Menu.cs" />
     <Compile Include="Paciente.cs" />
     <Compile Include="Persona.cs" />
     <Compile Include="PersonalAdministrativo.cs" />

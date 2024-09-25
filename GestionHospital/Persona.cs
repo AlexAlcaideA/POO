@@ -6,21 +6,16 @@ using System.Threading.Tasks;
 
 namespace GestionHospital
 {
-    internal class Persona
+    abstract class Persona
     {
         protected string nombre;
-        public string Nombre { get; }
+        public string Nombre { get { return nombre; } }
 
         protected Persona() { }
 
         protected Persona(string nombre) 
         {
             this.nombre = nombre;
-        }
-
-        public override string ToString()
-        {
-            return nombre;
         }
     }
 }

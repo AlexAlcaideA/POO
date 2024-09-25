@@ -10,9 +10,9 @@ namespace GestionHospital
     {
         static void Main(string[] args)
         {
-            Hospital hospital = new Hospital();
+            Menu menu = new Menu();
 
-            hospital.Menu();
+            menu.MenuLoop();
         }
     }
 }

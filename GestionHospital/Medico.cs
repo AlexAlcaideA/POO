@@ -9,15 +9,19 @@ namespace GestionHospital
     internal class Medico : Persona
     {
         private List<Paciente> pacientes;
+        ushort añosExperiencia;
+
+        public ushort AñosExperiencia { get { return añosExperiencia; } }
 
         public Medico()
         {
             
         }
 
-        public Medico(string nombre) : base(nombre)
+        public Medico(string nombre, ushort años) : base(nombre)
         {
             pacientes = new List<Paciente>();
+            añosExperiencia = años;
         }
 
         public void AñadirPaciente(Paciente p)
@@ -49,6 +53,11 @@ Con pacientes:");
             }
 
             return sb.ToString();
+        }
+
+        public override string ToString()
+        {
+            return $@"{nombre} con {añosExperiencia} años de experiencia";
         }
     }
 }
