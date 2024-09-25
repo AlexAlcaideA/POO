@@ -9,8 +9,10 @@ namespace GestionHospital
     internal class Medico : Persona
     {
         private List<Paciente> pacientes;
+        string especialidad;
         ushort añosExperiencia;
 
+        public string Especialidad { get { return especialidad; } }
         public ushort AñosExperiencia { get { return añosExperiencia; } }
 
         public Medico()
@@ -18,9 +20,10 @@ namespace GestionHospital
             
         }
 
-        public Medico(string nombre, ushort años) : base(nombre)
+        public Medico(string nombre, string especialidad, ushort años) : base(nombre)
         {
             pacientes = new List<Paciente>();
+            this.especialidad = especialidad;
             añosExperiencia = años;
         }
 
@@ -32,6 +35,13 @@ namespace GestionHospital
         public void EliminarPaciente(Paciente p)
         {
             pacientes.Remove(p);
+        }
+
+        public void ModificarDatos(string nombre, string especialidad, ushort añosExp)
+        {
+            this.nombre = nombre;
+            this.especialidad = especialidad;
+            añosExperiencia = añosExp;
         }
 
         public bool TieneAlPaciente(Paciente p)
@@ -57,7 +67,7 @@ Con pacientes:");
 
         public override string ToString()
         {
-            return $@"{nombre} con {añosExperiencia} años de experiencia";
+            return $@"{nombre} con {añosExperiencia} años de experiencia y con especialidad en {especialidad}";
         }
     }
 }

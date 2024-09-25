@@ -8,19 +8,29 @@ namespace GestionHospital
 {
     internal class PersonalAdministrativo : Persona
     {
-        private ushort añosContrato;
+        private DateTime fechaContratacion;
+        private string puesto;
 
-        public ushort AñosContrato { get { return añosContrato;} }
+        public DateTime FechaContratacion { get { return fechaContratacion;} }
+        public string Departamento {  get { return puesto; } }
         public PersonalAdministrativo() { }
 
-        public PersonalAdministrativo(string nombre, ushort años) : base(nombre) 
+        public PersonalAdministrativo(string nombre, DateTime fecha, string puesto) : base(nombre) 
         {
-            añosContrato = años;
+            fechaContratacion = fecha;
+            this.puesto = puesto;
+        }
+
+        public void ModificarDatosAdministrativo(string nombre, DateTime fecha, string puesto)
+        {
+            this.nombre = nombre;
+            fechaContratacion = fecha;
+            this.puesto = puesto;
         }
 
         public override string ToString()
         {
-            return $@"{nombre} con unos {añosContrato} años de contrato";
+            return $@"{nombre} con unos {fechaContratacion} años de contrato y del puesto de {puesto}";
         }
     }
 }

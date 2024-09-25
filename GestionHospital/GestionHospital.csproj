@@ -43,6 +43,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Cita.cs" />
+    <Compile Include="Diagnostico.cs" />
+    <Compile Include="HistorialMedico.cs" />
     <Compile Include="Medico.cs" />
     <Compile Include="Hospital.cs" />
     <Compile Include="Menu.cs" />
@@ -51,6 +54,7 @@
     <Compile Include="PersonalAdministrativo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tratamiento.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

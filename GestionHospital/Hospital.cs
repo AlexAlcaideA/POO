@@ -9,10 +9,12 @@ namespace GestionHospital
     internal class Hospital
     {
         private List<Persona> personas;
+        private List<Cita> citasMedicas;
 
         public Hospital() 
         {
             personas = new List<Persona>();
+            citasMedicas = new List<Cita>();
         }
 
         public Persona EncontrarPersonaPorNombre(string nombre)
@@ -28,6 +30,12 @@ namespace GestionHospital
         public Paciente EncontrarPacientePorNombre(string nombre)
         {
             return (Paciente)personas.Find(pers => pers.Nombre == nombre && pers.GetType() == typeof(Paciente));
+        }
+
+        public PersonalAdministrativo EncontrarPersonalAdministrativoPorNombre(string nombre)
+        {
+            return (PersonalAdministrativo)personas.Find(pers => pers.Nombre == nombre && 
+            pers.GetType() == typeof(PersonalAdministrativo));
         }
 
         public bool ContienePersona(Persona persona)
@@ -50,30 +58,35 @@ namespace GestionHospital
             personas.Add(adm);
         }
 
+        public void AñadirCitaMedica(DateTime fecha, Medico med, Paciente pac)
+        {
+            Cita cita = new Cita(fecha, med, pac);
+
+            citasMedicas.Add(cita);
+            pac.AñadirHistorialMedico(cita);
+        }
+
+        public void AñadirTratamientoPaciente(DateTime fecha, string tratamiento, string medicamento, Paciente pac)
+        {
+            pac.AñadirHistorialMedico(new Tratamiento(fecha, tratamiento, medicamento));
+        }
+
+        public void AñadirDiagnosticoPaciente(DateTime fecha, string notas, Paciente pac)
+        {
+            pac.AñadirHistorialMedico(new Diagnostico(fecha, notas));
+        }
+
+        public void ModificarCitaMedica(DateTime fecha)
+        {
+            Cita cita = citasMedicas.Find(c => c.Fecha == fecha);
+        }
+
         public void ListarMedicos()
         {
             foreach (Persona p in personas)
             {
                 if (p.GetType() == typeof(Medico))
                     Console.WriteLine(p.ToString());
-            }
-        }
-
-        public void ListaPacientesDeMedico(Medico m)
-        {
-            Console.WriteLine(m.ListaDePacientes());
-        }
-
-        public void EliminarPaciente(Paciente p)
-        {
-            personas.Remove(p);
-
-            List<Persona> lista = new List<Persona>(personas);
-            lista.RemoveAll(personas => personas.GetType() != typeof(Medico));
-
-            foreach (Medico m in lista)
-            {
-                m.EliminarPaciente(p);
             }
         }
 
@@ -88,12 +101,35 @@ namespace GestionHospital
             }
         }
 
+        public void ListaAdministrativos()
+        {
+            foreach (Persona p in personas)
+            {
+                if (p.GetType() == typeof(PersonalAdministrativo))
+                {
+                    Console.WriteLine(p.ToString());
+                }
+            }
+        }
+
+        public void ListaPacientesDeMedico(Medico m)
+        {
+            Console.WriteLine(m.ListaDePacientes());
+        }
+
         public void ListaPersonasHospital()
         {
             foreach (Persona p in personas)
             {
                 Console.WriteLine($@"{p.ToString()}, esta persona es un {p.GetType().Name}");
             }
+        }
+
+        public void EliminarPaciente(Paciente p)
+        {
+            personas.Remove(p);
+
+            p.EliminarseDelMedico();
         }
     }
 }
