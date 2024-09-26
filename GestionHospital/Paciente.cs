@@ -74,32 +74,44 @@ namespace GestionHospital
         {
             return (Diagnostico)historial.Find(tr => tr.Fecha == fecha && tr is Diagnostico);
         }
-        public void ListaTratamientos()
+        public string ListaTratamientos()
         {
             List<HistorialMedico> tratamientos = historial.Where(tratamiento => tratamiento is Tratamiento).ToList();
 
+            StringBuilder sb = new StringBuilder();
+
             foreach(Tratamiento tr in tratamientos)
             {
-                Console.WriteLine(tr.ToString());
+                sb.Append(tr);
             }
+
+            return sb.ToString();
         }
 
-        public void ListaDiagnosticos()
+        public string ListaDiagnosticos()
         {
             List<HistorialMedico> diagnosticos = historial.Where(diag => diag is Diagnostico).ToList();
 
+            StringBuilder sb = new StringBuilder();
+
             foreach (Diagnostico diag in diagnosticos)
             {
-                Console.WriteLine(diag.ToString());
+                sb.Append(diag);
             }
+
+            return sb.ToString();
         }
 
-        public void ListaHistorialMed()
+        public string ListaHistorialMed()
         {
+            StringBuilder sb = new StringBuilder();
+
             foreach (HistorialMedico hm in historial)
             {
-                Console.WriteLine(hm.ToString());
+                sb.Append(hm);
             }
+
+            return sb.ToString();
         }
 
         public void EliminarDelHistorialMedico(HistorialMedico hisMed)

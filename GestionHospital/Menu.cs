@@ -168,7 +168,7 @@ Que opcion desea escoger:
                 return;
 
             if (!hospital.ContienePersona(med))
-                hospital.DarDeAltaMedico(med);
+                hospital.DarDeAlta(med);
         }
 
         private void DarAltaPaciente()
@@ -177,7 +177,7 @@ Que opcion desea escoger:
 
             string enfermedad = ObtenerTexto("Escribe el nombre de la enfermedad:");
 
-            Paciente pacienteTemporal = hospital.EncontrarPacientePorNombre(nombre);
+            Paciente pacienteTemporal = hospital.EncontrarPerosnaPorNombre<Paciente>(nombre);
 
             ushort? edad = ObtenerAños("Edad del paciente:");
 
@@ -185,14 +185,14 @@ Que opcion desea escoger:
             hospital.ListarMedicos();
 
             string nombreDoc = ObtenerTexto("Escribe el nombre del medico:").ToLower();
-            Medico medicoTemp = hospital.EncontrarMedicoPorNombre(nombreDoc);
+            Medico medicoTemp = hospital.EncontrarPerosnaPorNombre<Medico>(nombreDoc);
 
             if (!hospital.ContienePersona(pacienteTemporal) && hospital.ContienePersona(medicoTemp) &&
                 edad != null)
             {
                 Paciente pac = new Paciente(nombre, medicoTemp, edad.Value, enfermedad);
 
-                hospital.DarDeAltaPaciente(pac);
+                hospital.DarDeAlta(pac);
                 medicoTemp.AñadirPaciente(pac);
             }
         }
@@ -212,7 +212,7 @@ Que opcion desea escoger:
                 return;
 
             if (!hospital.ContienePersona(adm))
-                hospital.DarDeAltaPersonalAdmin(adm);
+                hospital.DarDeAlta(adm);
         }
 
         public void AñadirCitaMedica()
@@ -223,13 +223,13 @@ Que opcion desea escoger:
             hospital.ListarMedicos();
             string nombreMedico = ObtenerTexto("Escribe el nombre del medico:");
 
-            Medico med = hospital.EncontrarMedicoPorNombre(nombreMedico);
+            Medico med = hospital.EncontrarPerosnaPorNombre<Medico>(nombreMedico);
 
             Console.WriteLine("Lista de pacientes:");
             hospital.ListaPacientes();
             string nombrePaciente = ObtenerTexto("Escribe el nombre del paciente:");
 
-            Paciente pac = hospital.EncontrarPacientePorNombre(nombrePaciente);
+            Paciente pac = hospital.EncontrarPerosnaPorNombre<Paciente>(nombrePaciente);
 
             if (fecha != null && med != null && pac != null)
                 hospital.AñadirCitaMedica(fecha.Value, med, pac);
@@ -243,13 +243,13 @@ Que opcion desea escoger:
             hospital.ListarMedicos();
             string nombreMedico = ObtenerTexto("Escribe el nombre del medico:");
 
-            Medico med = hospital.EncontrarMedicoPorNombre(nombreMedico);
+            Medico med = hospital.EncontrarPerosnaPorNombre<Medico>(nombreMedico);
 
             Console.WriteLine("Lista de pacientes:");
             hospital.ListaPacientes();
             string nombrePaciente = ObtenerTexto("Escribe el nombre del paciente:");
 
-            Paciente pac = hospital.EncontrarPacientePorNombre(nombrePaciente);
+            Paciente pac = hospital.EncontrarPerosnaPorNombre<Paciente>(nombrePaciente);
 
             string tratamiento = ObtenerTexto("Descripcion del tratamiento:");
 
@@ -267,13 +267,13 @@ Que opcion desea escoger:
             hospital.ListarMedicos();
             string nombreMedico = ObtenerTexto("Escribe el nombre del medico:");
 
-            Medico med = hospital.EncontrarMedicoPorNombre(nombreMedico);
+            Medico med = hospital.EncontrarPerosnaPorNombre<Medico>(nombreMedico);
 
             Console.WriteLine("Lista de pacientes:");
             hospital.ListaPacientes();
             string nombrePaciente = ObtenerTexto("Escribe el nombre del paciente:");
 
-            Paciente pac = hospital.EncontrarPacientePorNombre(nombrePaciente);
+            Paciente pac = hospital.EncontrarPerosnaPorNombre<Paciente>(nombrePaciente);
 
             string notas = ObtenerTexto("Nota del medico:");
 
@@ -287,7 +287,7 @@ Que opcion desea escoger:
             hospital.ListarMedicos();
             string nombreMedico = ObtenerTexto("Nombre del medico a modificar:");
 
-            Medico med = hospital.EncontrarMedicoPorNombre(nombreMedico);
+            Medico med = hospital.EncontrarPerosnaPorNombre<Medico>(nombreMedico);
 
             if (med != null)
             {
@@ -311,7 +311,7 @@ Que opcion desea escoger:
 
             string nombrePaciente = ObtenerTexto("Nombre paciente a modificar:");
 
-            Paciente pac = hospital.EncontrarPacientePorNombre(nombrePaciente);
+            Paciente pac = hospital.EncontrarPerosnaPorNombre<Paciente>(nombrePaciente);
 
             if(pac != null)
             {
@@ -323,7 +323,7 @@ Que opcion desea escoger:
                 hospital.ListarMedicos();
 
                 string nombreMedico = ObtenerTexto("Nombre del medico al que asignar");
-                Medico med = hospital.EncontrarMedicoPorNombre(nombreMedico);
+                Medico med = hospital.EncontrarPerosnaPorNombre<Medico>(nombreMedico);
 
                 ushort? edad = ObtenerAños("Edad del paciente:");
 
@@ -345,7 +345,7 @@ Que opcion desea escoger:
 
             string nombrePersonal = ObtenerTexto("Nombre persona Administrativa a modificar:");
 
-            PersonalAdministrativo tempAdministrativo = hospital.EncontrarPersonalAdministrativoPorNombre(nombrePersonal);
+            PersonalAdministrativo tempAdministrativo = hospital.EncontrarPerosnaPorNombre<PersonalAdministrativo>(nombrePersonal);
 
             if (tempAdministrativo != null)
             {
@@ -391,9 +391,9 @@ Datos de la cita:
             hospital.ListaPacientes();
             string nombrePaciente = ObtenerTexto("Escribe el nombre del nuevo paciente:");
 
-            Medico med = hospital.EncontrarMedicoPorNombre(nombreMedico);
+            Medico med = hospital.EncontrarPerosnaPorNombre<Medico>(nombreMedico);
 
-            Paciente pac = hospital.EncontrarPacientePorNombre(nombrePaciente);
+            Paciente pac = hospital.EncontrarPerosnaPorNombre<Paciente>(nombrePaciente);
 
             if (fecha != null && med != null && pac != null)
                 tempCita.ModificarCita(fecha.Value, med, pac);
@@ -406,13 +406,14 @@ Datos de la cita:
 
             string nombrePaciente = ObtenerTexto("Escribe el nombre del paciente al que modificar su tratamiento:");
 
-            Paciente pac = hospital.EncontrarPacientePorNombre(nombrePaciente);
+            Paciente pac = hospital.EncontrarPerosnaPorNombre<Paciente>(nombrePaciente);
 
             if (pac == null)
                 return;
 
-            Console.WriteLine("Lista de tratamientos del paciente:");
-            pac.ListaTratamientos();
+            Console.WriteLine($@"
+Lista de tratamientos del paciente:
+{pac.ListaTratamientos()}");
 
             DateTime? fechaTratamiento = ObtenerFecha("Escriba la fecha del tratamiento a modificar, formato: dd/mm/yyyy");
             
@@ -429,7 +430,7 @@ Tratamiento:
             hospital.ListarMedicos();
             string nombreMedico = ObtenerTexto("Nombre del nuevo medico:");
 
-            Medico tempMedico = hospital.EncontrarMedicoPorNombre(nombreMedico);
+            Medico tempMedico = hospital.EncontrarPerosnaPorNombre<Medico>(nombreMedico);
 
             string tratamiento = ObtenerTexto("Nuevo tratamiento:");
 
@@ -446,13 +447,14 @@ Tratamiento:
 
             string nombrePaciente = ObtenerTexto("Escribe el nombre del paciente al que modificar su diagnostico:");
 
-            Paciente pac = hospital.EncontrarPacientePorNombre(nombrePaciente);
+            Paciente pac = hospital.EncontrarPerosnaPorNombre<Paciente>(nombrePaciente);
 
             if (pac == null)
                 return;
 
-            Console.WriteLine("Lista de diagnosticos del paciente:");
-            pac.ListaDiagnosticos();
+            Console.WriteLine($@"
+Lista de diagnosticos del paciente:
+{pac.ListaDiagnosticos()}");
 
             DateTime? fechaDiagnostico = ObtenerFecha("Escriba la fecha del diagnostico a modificar, formato: dd/mm/yyyy");
 
@@ -469,7 +471,7 @@ Diagnostico:
             hospital.ListarMedicos();
             string nombreMedico = ObtenerTexto("Nombre del nuevo medico:");
 
-            Medico tempMedico = hospital.EncontrarMedicoPorNombre(nombreMedico);
+            Medico tempMedico = hospital.EncontrarPerosnaPorNombre<Medico>(nombreMedico);
 
             string notas = ObtenerTexto("Nuevas notas:");
 
@@ -484,7 +486,7 @@ Diagnostico:
 
             string nombre = ObtenerTexto("Escribe el nombre del medico para ver sus pacientes:").ToLower();
 
-            Medico m = hospital.EncontrarMedicoPorNombre(nombre);
+            Medico m = hospital.EncontrarPerosnaPorNombre<Medico>(nombre);
 
             if (m != null)
                 hospital.ListaPacientesDeMedico(m);
@@ -497,7 +499,7 @@ Diagnostico:
 
             string nombreMedico = ObtenerTexto("Escribe el nombre del medico para saber sus citas:");
 
-            Medico med = hospital.EncontrarMedicoPorNombre(nombreMedico);
+            Medico med = hospital.EncontrarPerosnaPorNombre<Medico>(nombreMedico);
 
             if (med != null)
                 hospital.ListaDeCitasDelMedico(med);
@@ -510,10 +512,10 @@ Diagnostico:
 
             string nombrePaciente = ObtenerTexto("Escribe el nombre del paciente para mirar su historial:");
 
-            Paciente pac = hospital.EncontrarPacientePorNombre(nombrePaciente);
+            Paciente pac = hospital.EncontrarPerosnaPorNombre<Paciente>(nombrePaciente);
 
             if (pac != null)
-                pac.ListaHistorialMed();
+                Console.WriteLine(pac.ListaHistorialMed());
         }
 
         private void EliminarPaciente()
@@ -524,7 +526,7 @@ Diagnostico:
             Console.WriteLine("Escribe el nombre del paciente a eliminar:");
             string nombre = Console.ReadLine().ToLower();
 
-            Paciente p = hospital.EncontrarPacientePorNombre(nombre);
+            Paciente p = hospital.EncontrarPerosnaPorNombre<Paciente>(nombre);
 
             if (p != null)
                 hospital.EliminarPaciente(p);

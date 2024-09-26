@@ -17,25 +17,9 @@ namespace GestionHospital
             citasMedicas = new List<Cita>();
         }
 
-        public Persona EncontrarPersonaPorNombre(string nombre)
+        public T EncontrarPerosnaPorNombre<T>(string nombre) where T : Persona
         {
-            return personas.Find(pers => pers.Nombre == nombre);
-        }
-
-        public Medico EncontrarMedicoPorNombre(string nombre)
-        {
-            return (Medico)personas.Find(pers => pers.Nombre == nombre && pers is Medico);
-        }
-
-        public Paciente EncontrarPacientePorNombre(string nombre)
-        {
-            return (Paciente)personas.Find(pers => pers.Nombre == nombre && pers is Paciente);
-        }
-
-        public PersonalAdministrativo EncontrarPersonalAdministrativoPorNombre(string nombre)
-        {
-            return (PersonalAdministrativo)personas.Find(pers => pers.Nombre == nombre && 
-            pers is PersonalAdministrativo);
+            return personas.Find(pers => pers.Nombre == nombre && pers is T) as T;
         }
 
         public Cita EncontrarCitaPorFecha(DateTime fecha)
@@ -48,19 +32,9 @@ namespace GestionHospital
             return personas.Contains(persona);
         }
 
-        public void DarDeAltaMedico(Medico m)
-        {
-            personas.Add(m);
-        }
-
-        public void DarDeAltaPaciente(Paciente p)
+        public void DarDeAlta(Persona p)
         {
             personas.Add(p);
-        }
-
-        public void DarDeAltaPersonalAdmin(PersonalAdministrativo adm)
-        {
-            personas.Add(adm);
         }
 
         public void AñadirCitaMedica(DateTime fecha, Medico med, Paciente pac)
@@ -84,7 +58,7 @@ namespace GestionHospital
 
         public void ModificarCitaMedica(Cita citaModificar, DateTime fechaNueva, Medico medNuevo = null, Paciente pacNuevo = null)
         {
-            Console.WriteLine(citaModificar.ToString());
+            Console.WriteLine(citaModificar);
 
             citaModificar.ModificarCita(fechaNueva, medNuevo, pacNuevo);
         }
@@ -106,8 +80,8 @@ namespace GestionHospital
         {
             foreach (Persona p in personas)
             {
-                if (p.GetType() == typeof(Medico))
-                    Console.WriteLine(p.ToString());
+                if (p is Medico)
+                    Console.WriteLine(p);
             }
         }
 
@@ -115,9 +89,9 @@ namespace GestionHospital
         {
             foreach(Persona p in personas)
             {
-                if(p.GetType() == typeof(Paciente))
+                if(p is Paciente)
                 {
-                    Console.WriteLine(p.ToString());
+                    Console.WriteLine(p);
                 }
             }
         }
@@ -126,9 +100,9 @@ namespace GestionHospital
         {
             foreach (Persona p in personas)
             {
-                if (p.GetType() == typeof(PersonalAdministrativo))
+                if (p is PersonalAdministrativo)
                 {
-                    Console.WriteLine(p.ToString());
+                    Console.WriteLine(p);
                 }
             }
         }
@@ -142,7 +116,7 @@ namespace GestionHospital
         {
             foreach (Persona p in personas)
             {
-                Console.WriteLine($@"{p.ToString()}, esta persona es un {p.GetType().Name}");
+                Console.WriteLine($@"{p}, esta persona es un {p.GetType().Name}");
             }
         }
 
@@ -158,6 +132,5 @@ namespace GestionHospital
         {
             Console.WriteLine(m.ListaDeCitasMedicas());
         }
-
     }
 }
