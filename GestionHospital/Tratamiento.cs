@@ -13,14 +13,23 @@ namespace GestionHospital
         public string Medicina { get { return medicina; } }
 
         public Tratamiento() { }
-        public Tratamiento(DateTime fecha, string tratamiento, string medicina) : base(fecha, tratamiento)
+        public Tratamiento(DateTime fecha, Medico med, string tratamiento, string medicina) : base(fecha, med, tratamiento)
         {
+            this.medicina = medicina;
+        }
+
+        public void ModificarTratamiento(DateTime fecha, Medico med, string tratamiento, string medicina)
+        {
+            this.fecha = fecha;
+            medico = med;
+            texto = tratamiento;
             this.medicina = medicina;
         }
 
         public override string ToString()
         {
-            return $"El tratamiento de {texto} con la medicina {medicina} se dio el {fecha.ToShortDateString()}";
+            return $@"El tratamiento de {texto} con la medicina {medicina} se dio el {fecha.ToShortDateString()} 
+Por el medico {medico}";
         }
     }
 }

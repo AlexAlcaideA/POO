@@ -9,11 +9,18 @@ namespace GestionHospital
     internal class Diagnostico : HistorialMedico
     {
         public Diagnostico() { }
-        public Diagnostico(DateTime fecha, string notas) : base(fecha, notas) { }
+        public Diagnostico(DateTime fecha, Medico med, string notas) : base(fecha, med, notas) { }
+
+        public void ModificarDiagnostico(DateTime fecha, Medico med, string notas)
+        {
+            this.fecha = fecha;
+            medico = med;
+            texto = notas;
+        }
 
         public override string ToString()
         {
-            return $"Se diagnostico {texto} el {fecha.ToShortDateString()}";
+            return $"Se diagnostico {texto} el {fecha.ToShortDateString()} por el medico {medico}";
         }
     }
 }

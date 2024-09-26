@@ -9,6 +9,7 @@ namespace GestionHospital
     internal class Medico : Persona
     {
         private List<Paciente> pacientes;
+        private List<Cita> citasMedicas;
         string especialidad;
         ushort añosExperiencia;
 
@@ -23,6 +24,8 @@ namespace GestionHospital
         public Medico(string nombre, string especialidad, ushort años) : base(nombre)
         {
             pacientes = new List<Paciente>();
+            citasMedicas = new List<Cita>();
+
             this.especialidad = especialidad;
             añosExperiencia = años;
         }
@@ -32,9 +35,19 @@ namespace GestionHospital
             pacientes.Add(p);
         }
 
+        public void AñadirCitaMedica(Cita c)
+        {
+            citasMedicas.Add(c);
+        }
+
         public void EliminarPaciente(Paciente p)
         {
             pacientes.Remove(p);
+        }
+
+        public void EliminarCitaMedica(Cita c)
+        {
+            citasMedicas.Remove(c);
         }
 
         public void ModificarDatos(string nombre, string especialidad, ushort añosExp)
@@ -60,6 +73,22 @@ Con pacientes:");
             foreach (Paciente p in pacientes)
             {
                 sb.AppendLine(p.ToString());
+            }
+
+            return sb.ToString();
+        }
+
+        public string ListaDeCitasMedicas()
+        {
+            StringBuilder sb = new StringBuilder();
+
+            sb.AppendLine($@"
+El medico: {nombre}
+Citas medicas:");
+
+            foreach (Cita c in citasMedicas)
+            {
+                sb.AppendLine(c.ToString());
             }
 
             return sb.ToString();

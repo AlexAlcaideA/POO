@@ -10,16 +10,27 @@ namespace GestionHospital
     {
         public enum eOpcionMenu
         {
+            Salir = 0,
             DarDeAltaMedico = 1,
             DarDeAltaPaciente = 2,
             DarDeAltaPersonalAdmin = 3,
-            ModificarDatosMedico = 4,
-            ModificarDatosPaciente = 5,
-            ModificarDatosAdmin = 6,
-            ListarMedicos = 7,
-            ListaPacientesDeMedico = 8,
-            EliminarPaciente = 9,
-            ListaPersonasHospital = 10
+            AñadirCitaMedica = 4,
+            AñadirTratamiento = 5,
+            AñadirDiagnostico = 6,
+            ModificarDatosMedico = 7,
+            ModificarDatosPaciente = 8,
+            ModificarDatosAdmin = 9,
+            ModificarCita = 10,
+            ModificarTratamiento = 11,
+            ModificarDiagnostico = 12,
+            ListarMedicos = 13,
+            ListaPacientesDeMedico = 14,
+            ListaCitasMedico = 15,
+            ListaPersonasHospital = 16,
+            ListaDeCitas = 17,
+            ListaHistorialPaciente = 18,
+            EliminarPaciente = 19,
+            EliminarCita = 20
         }
 
         private Hospital hospital;
@@ -38,21 +49,33 @@ Que opcion desea escoger:
 1) Dar de alta al Medico
 2) Dar de alta al Paciente
 3) Dar de alta al Personal Administrativo
-4) Modificar datos de Medico
-5) Modificar datos de Paciente
-6) Modificar datos de Personal Administrativo
-7) Listar Medicos
-8) Lista de Pacientes de un Medico
-9) Eliminar Paciente
-10) Lista de Personas del Hospital
+4) Añadir cita medica
+5) Añadir tratamiento a paciente
+6) Añadir diagnostico a paciente
+7) Modificar datos de Medico
+8) Modificar datos de Paciente
+9) Modificar datos de Personal Administrativo
+10) Modificar cita
+11) Modificar tratamiendo del paciente
+12) Modificar diagnostico del paciente
+13) Listar Medicos
+14) Lista de Pacientes de un Medico
+15) Lista citas de un medico
+16) Lista de Personas del Hospital
+17) Lista de citas
+18) Lista historial medico de paciente
+19) Eliminar Paciente
+20) Eliminar cita medica
 0) Salir");
+
                 string opcionUsuario = Console.ReadLine();
                 eOpcionMenu menu;
 
-                if (opcionUsuario == "0")
-                    break;
-                else if (!Enum.TryParse(opcionUsuario, out menu))
+
+                if (!Enum.TryParse(opcionUsuario, out menu))
                     continue;
+                else if (menu == eOpcionMenu.Salir)
+                    break;
 
                 Console.Clear();
 
@@ -74,6 +97,15 @@ Que opcion desea escoger:
                 case eOpcionMenu.DarDeAltaPersonalAdmin:
                     DarAltaPersonalAdministrativo();
                     break;
+                case eOpcionMenu.AñadirCitaMedica:
+                    AñadirCitaMedica();
+                    break;
+                case eOpcionMenu.AñadirTratamiento:
+                    AñadirTratamientoMedico();
+                    break;
+                case eOpcionMenu.AñadirDiagnostico:
+                    AñadirDiagnostico();
+                    break;
                 case eOpcionMenu.ModificarDatosMedico:
                     ModificarDatosMedico();
                     break;
@@ -83,17 +115,38 @@ Que opcion desea escoger:
                 case eOpcionMenu.ModificarDatosAdmin:
                     ModificarDatosAdministrativo();
                     break;
+                case eOpcionMenu.ModificarCita:
+                    ModificarCita();
+                    break;
+                case eOpcionMenu.ModificarTratamiento:
+                    ModificarTratamientoAPaciente();
+                    break;
+                case eOpcionMenu.ModificarDiagnostico:
+                    ModificarDiagnosticoAPaciente();
+                    break;
                 case eOpcionMenu.ListarMedicos:
                     hospital.ListarMedicos();
                     break;
                 case eOpcionMenu.ListaPacientesDeMedico:
                     ListarPacientesMedico();
                     break;
-                case eOpcionMenu.EliminarPaciente:
-                    EliminarPaciente();
+                case eOpcionMenu.ListaCitasMedico:
+                    ListaDeCitasDeMedico();
                     break;
                 case eOpcionMenu.ListaPersonasHospital:
                     hospital.ListaPersonasHospital();
+                    break;
+                case eOpcionMenu.ListaDeCitas:
+                    hospital.ListaCitas();
+                    break;
+                case eOpcionMenu.ListaHistorialPaciente:
+                    ListaHistorialPaciente();
+                    break;
+                case eOpcionMenu.EliminarPaciente:
+                    EliminarPaciente();
+                    break;
+                case eOpcionMenu.EliminarCita:
+                    EliminarCita();
                     break;
             }
         }
@@ -162,18 +215,83 @@ Que opcion desea escoger:
                 hospital.DarDeAltaPersonalAdmin(adm);
         }
 
+        public void AñadirCitaMedica()
+        {
+            DateTime? fecha = ObtenerFecha("Inserte la fecha y hora, formato: dd/mm/yyyy hh:mm");
+
+            Console.WriteLine("Lista de medicos:");
+            hospital.ListarMedicos();
+            string nombreMedico = ObtenerTexto("Escribe el nombre del medico:");
+
+            Medico med = hospital.EncontrarMedicoPorNombre(nombreMedico);
+
+            Console.WriteLine("Lista de pacientes:");
+            hospital.ListaPacientes();
+            string nombrePaciente = ObtenerTexto("Escribe el nombre del paciente:");
+
+            Paciente pac = hospital.EncontrarPacientePorNombre(nombrePaciente);
+
+            if (fecha != null && med != null && pac != null)
+                hospital.AñadirCitaMedica(fecha.Value, med, pac);
+        }
+
+        public void AñadirTratamientoMedico()
+        {
+            DateTime? fecha = ObtenerFecha("Inserte la fecha y hora, formato: dd/mm/yyyy");
+
+            Console.WriteLine("Lista de medicos:");
+            hospital.ListarMedicos();
+            string nombreMedico = ObtenerTexto("Escribe el nombre del medico:");
+
+            Medico med = hospital.EncontrarMedicoPorNombre(nombreMedico);
+
+            Console.WriteLine("Lista de pacientes:");
+            hospital.ListaPacientes();
+            string nombrePaciente = ObtenerTexto("Escribe el nombre del paciente:");
+
+            Paciente pac = hospital.EncontrarPacientePorNombre(nombrePaciente);
+
+            string tratamiento = ObtenerTexto("Descripcion del tratamiento:");
+
+            string medicamento = ObtenerTexto("Medicamentos necesarios:");
+
+            if (fecha != null && med != null && pac != null)
+                hospital.AñadirTratamientoPaciente(fecha.Value, tratamiento, medicamento, med, pac);
+        }
+
+        public void AñadirDiagnostico()
+        {
+            DateTime? fecha = ObtenerFecha("Inserte la fecha y hora, formato: dd/mm/yyyy");
+
+            Console.WriteLine("Lista de medicos:");
+            hospital.ListarMedicos();
+            string nombreMedico = ObtenerTexto("Escribe el nombre del medico:");
+
+            Medico med = hospital.EncontrarMedicoPorNombre(nombreMedico);
+
+            Console.WriteLine("Lista de pacientes:");
+            hospital.ListaPacientes();
+            string nombrePaciente = ObtenerTexto("Escribe el nombre del paciente:");
+
+            Paciente pac = hospital.EncontrarPacientePorNombre(nombrePaciente);
+
+            string notas = ObtenerTexto("Nota del medico:");
+
+            if (fecha != null && med != null && pac != null)
+                hospital.AñadirDiagnosticoPaciente(fecha.Value, notas, med, pac);
+        }
+
         public void ModificarDatosMedico()
         {
             Console.WriteLine("Lista medicos:");
             hospital.ListarMedicos();
-
             string nombreMedico = ObtenerTexto("Nombre del medico a modificar:");
 
             Medico med = hospital.EncontrarMedicoPorNombre(nombreMedico);
 
             if (med != null)
             {
-                Console.WriteLine($"El medico es: {med.ToString()}");
+                Console.WriteLine($"El medico actual es: {med.ToString()}");
 
                 string nuevoNombre = ObtenerTexto("Nombre del medico:");
                 string especialidad = ObtenerTexto("Escribe la especialidad del medico:");
@@ -201,6 +319,9 @@ Que opcion desea escoger:
 
                 string nombre = ObtenerTexto("Nombre del paciente:");
 
+                Console.WriteLine("Lista de medicos:");
+                hospital.ListarMedicos();
+
                 string nombreMedico = ObtenerTexto("Nombre del medico al que asignar");
                 Medico med = hospital.EncontrarMedicoPorNombre(nombreMedico);
 
@@ -219,7 +340,6 @@ Que opcion desea escoger:
 
         private void ModificarDatosAdministrativo()
         {
-
             Console.WriteLine("Lista de administrativos:");
             hospital.ListaAdministrativos();
 
@@ -242,8 +362,124 @@ Que opcion desea escoger:
             }
         }
 
+        public void ModificarCita()
+        {
+            Console.WriteLine("Lista de citas:");
+            hospital.ListaCitas();
+
+            DateTime? fecha = ObtenerFecha("Escribe la fecha de la cita que buscas, de formato dd/mm/yyyy hh:mm");
+
+            if (fecha == null)
+                return;
+
+            Cita tempCita = hospital.EncontrarCitaPorFecha(fecha.Value);
+
+            if (tempCita == null)
+                return;
+
+            Console.WriteLine($@"
+Datos de la cita:
+{tempCita.ToString()}");
+
+            fecha = ObtenerFecha("Escribe la nueva fecha, de formato dd/mm/yyyy hh:mm");
+
+            Console.WriteLine("Lista medicos:");
+            hospital.ListarMedicos();
+            string nombreMedico = ObtenerTexto("Escribe el nombre del nuevo medico:");
+
+            Console.WriteLine("Lista pacientes:");
+            hospital.ListaPacientes();
+            string nombrePaciente = ObtenerTexto("Escribe el nombre del nuevo paciente:");
+
+            Medico med = hospital.EncontrarMedicoPorNombre(nombreMedico);
+
+            Paciente pac = hospital.EncontrarPacientePorNombre(nombrePaciente);
+
+            if (fecha != null && med != null && pac != null)
+                tempCita.ModificarCita(fecha.Value, med, pac);
+        }
+
+        public void ModificarTratamientoAPaciente()
+        {
+            Console.WriteLine("Lista de paciente:");
+            hospital.ListaPacientes();
+
+            string nombrePaciente = ObtenerTexto("Escribe el nombre del paciente al que modificar su tratamiento:");
+
+            Paciente pac = hospital.EncontrarPacientePorNombre(nombrePaciente);
+
+            if (pac == null)
+                return;
+
+            Console.WriteLine("Lista de tratamientos del paciente:");
+            pac.ListaTratamientos();
+
+            DateTime? fechaTratamiento = ObtenerFecha("Escriba la fecha del tratamiento a modificar, formato: dd/mm/yyyy");
+            
+            if(fechaTratamiento == null || !pac.HayTratamientoEnFecha(fechaTratamiento.Value))
+                return;
+
+            Tratamiento trat = pac.ObtenTratamientoEnFecha(fechaTratamiento.Value);
+
+            Console.WriteLine($@"
+Tratamiento:
+{trat.ToString()}");
+
+            Console.WriteLine("Lista medicos:");
+            hospital.ListarMedicos();
+            string nombreMedico = ObtenerTexto("Nombre del nuevo medico:");
+
+            Medico tempMedico = hospital.EncontrarMedicoPorNombre(nombreMedico);
+
+            string tratamiento = ObtenerTexto("Nuevo tratamiento:");
+
+            string medicina = ObtenerTexto("Nuevas medicinas:");
+
+            if (tempMedico != null)
+                pac.ModificarTratamiento(fechaTratamiento.Value, tempMedico, tratamiento, medicina);
+        }
+
+        public void ModificarDiagnosticoAPaciente()
+        {
+            Console.WriteLine("Lista de paciente:");
+            hospital.ListaPacientes();
+
+            string nombrePaciente = ObtenerTexto("Escribe el nombre del paciente al que modificar su diagnostico:");
+
+            Paciente pac = hospital.EncontrarPacientePorNombre(nombrePaciente);
+
+            if (pac == null)
+                return;
+
+            Console.WriteLine("Lista de diagnosticos del paciente:");
+            pac.ListaDiagnosticos();
+
+            DateTime? fechaDiagnostico = ObtenerFecha("Escriba la fecha del diagnostico a modificar, formato: dd/mm/yyyy");
+
+            if (fechaDiagnostico == null || !pac.HayDiagnosticoEnFecha(fechaDiagnostico.Value))
+                return;
+
+            Diagnostico diag = pac.ObtenDiagnosticoEnFecha(fechaDiagnostico.Value);
+
+            Console.WriteLine($@"
+Diagnostico:
+{diag.ToString()}");
+
+            Console.WriteLine("Lista medicos:");
+            hospital.ListarMedicos();
+            string nombreMedico = ObtenerTexto("Nombre del nuevo medico:");
+
+            Medico tempMedico = hospital.EncontrarMedicoPorNombre(nombreMedico);
+
+            string notas = ObtenerTexto("Nuevas notas:");
+
+            if (tempMedico != null)
+                pac.ModificarDiagnostico(fechaDiagnostico.Value, tempMedico, notas);
+        }
+
         private void ListarPacientesMedico()
         {
+            Console.WriteLine("Lista medicos:");
             hospital.ListarMedicos();
 
             string nombre = ObtenerTexto("Escribe el nombre del medico para ver sus pacientes:").ToLower();
@@ -252,6 +488,32 @@ Que opcion desea escoger:
 
             if (m != null)
                 hospital.ListaPacientesDeMedico(m);
+        }
+
+        public void ListaDeCitasDeMedico()
+        {
+            Console.WriteLine("Lista de medicos:");
+            hospital.ListarMedicos();
+
+            string nombreMedico = ObtenerTexto("Escribe el nombre del medico para saber sus citas:");
+
+            Medico med = hospital.EncontrarMedicoPorNombre(nombreMedico);
+
+            if (med != null)
+                hospital.ListaDeCitasDelMedico(med);
+        }
+
+        public void ListaHistorialPaciente()
+        {
+            Console.WriteLine("Lista de pacientes:");
+            hospital.ListaPacientes();
+
+            string nombrePaciente = ObtenerTexto("Escribe el nombre del paciente para mirar su historial:");
+
+            Paciente pac = hospital.EncontrarPacientePorNombre(nombrePaciente);
+
+            if (pac != null)
+                pac.ListaHistorialMed();
         }
 
         private void EliminarPaciente()
@@ -266,6 +528,21 @@ Que opcion desea escoger:
 
             if (p != null)
                 hospital.EliminarPaciente(p);
+        }
+
+        public void EliminarCita()
+        {
+            Console.WriteLine("Lista de citas:");
+            hospital.ListaCitas();
+
+            DateTime? fecha = ObtenerFecha("Escribe la fecha de la cita que buscas, de formato dd/mm/yyyy hh:mm");
+
+            if (fecha == null)
+                return;
+
+            Cita tempCita = hospital.EncontrarCitaPorFecha(fecha.Value);
+
+            hospital.EliminarCita(tempCita);
         }
 
         private ushort? ObtenerAños(string pregunta)
@@ -298,6 +575,5 @@ Que opcion desea escoger:
             else
                 return null;
         }
-
     }
 }

@@ -8,15 +8,36 @@ namespace GestionHospital
 {
     internal class Cita : HistorialMedico
     {
-        private Medico medico;
         private Paciente paciente;
 
         public Cita() { }
 
-        public Cita(DateTime fecha, Medico med, Paciente pac) : base(fecha)
+        public Cita(DateTime fecha, Medico med, Paciente pac) : base(fecha, med)
         {
-            medico = med;
             paciente = pac;
+        }
+
+        public void ModificarCita(DateTime fecha, Medico med, Paciente pac)
+        {
+            this.fecha = fecha;
+
+            if (med != null)
+                medico = med;
+
+            if (pac != null)
+            {
+                EliminarCita();
+
+                pac.AñadirHistorialMedico(this);
+
+                paciente = pac;
+            }  
+        }
+
+        public void EliminarCita()
+        {
+            paciente.EliminarDelHistorialMedico(this);
+            medico.EliminarCitaMedica(this);
         }
 
         public override string ToString()

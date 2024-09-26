@@ -34,9 +34,77 @@ namespace GestionHospital
             this.enfermedad = enfermedad;
         }
 
+        public void ModificarTratamiento(DateTime fecha, Medico med, string tratamiento, string medicina)
+        {
+            Tratamiento hisMed = (Tratamiento)historial.Find(tr => tr.Fecha == fecha && tr is Tratamiento);
+
+            if (hisMed != null)
+                hisMed.ModificarTratamiento(fecha, med, tratamiento, medicina);
+        }
+
+        public void ModificarDiagnostico(DateTime fecha, Medico med, string nota)
+        {
+            Diagnostico hisMed = (Diagnostico)historial.Find(tr => tr.Fecha == fecha && tr is Diagnostico);
+
+            if (hisMed != null)
+                hisMed.ModificarDiagnostico(fecha, med, nota);
+        }
+
         public void AñadirHistorialMedico(HistorialMedico hisMed)
         {
             historial.Add(hisMed);
+        }
+
+        public bool HayTratamientoEnFecha(DateTime fecha)
+        {
+            return historial.Any(tr => tr.Fecha == fecha && tr is Tratamiento);
+        }
+
+        public bool HayDiagnosticoEnFecha(DateTime fecha)
+        {
+            return historial.Any(tr => tr.Fecha == fecha && tr is Diagnostico);
+        }
+
+        public Tratamiento ObtenTratamientoEnFecha(DateTime fecha)
+        {
+            return (Tratamiento)historial.Find(tr => tr.Fecha == fecha && tr is Tratamiento);
+        }
+
+        public Diagnostico ObtenDiagnosticoEnFecha(DateTime fecha)
+        {
+            return (Diagnostico)historial.Find(tr => tr.Fecha == fecha && tr is Diagnostico);
+        }
+        public void ListaTratamientos()
+        {
+            List<HistorialMedico> tratamientos = historial.Where(tratamiento => tratamiento is Tratamiento).ToList();
+
+            foreach(Tratamiento tr in tratamientos)
+            {
+                Console.WriteLine(tr.ToString());
+            }
+        }
+
+        public void ListaDiagnosticos()
+        {
+            List<HistorialMedico> diagnosticos = historial.Where(diag => diag is Diagnostico).ToList();
+
+            foreach (Diagnostico diag in diagnosticos)
+            {
+                Console.WriteLine(diag.ToString());
+            }
+        }
+
+        public void ListaHistorialMed()
+        {
+            foreach (HistorialMedico hm in historial)
+            {
+                Console.WriteLine(hm.ToString());
+            }
+        }
+
+        public void EliminarDelHistorialMedico(HistorialMedico hisMed)
+        {
+            historial.Remove(hisMed);
         }
 
         public void EliminarseDelMedico()

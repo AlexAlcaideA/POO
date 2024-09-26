@@ -24,18 +24,23 @@ namespace GestionHospital
 
         public Medico EncontrarMedicoPorNombre(string nombre)
         {
-            return (Medico)personas.Find(pers => pers.Nombre == nombre && pers.GetType() == typeof(Medico));
+            return (Medico)personas.Find(pers => pers.Nombre == nombre && pers is Medico);
         }
 
         public Paciente EncontrarPacientePorNombre(string nombre)
         {
-            return (Paciente)personas.Find(pers => pers.Nombre == nombre && pers.GetType() == typeof(Paciente));
+            return (Paciente)personas.Find(pers => pers.Nombre == nombre && pers is Paciente);
         }
 
         public PersonalAdministrativo EncontrarPersonalAdministrativoPorNombre(string nombre)
         {
             return (PersonalAdministrativo)personas.Find(pers => pers.Nombre == nombre && 
-            pers.GetType() == typeof(PersonalAdministrativo));
+            pers is PersonalAdministrativo);
+        }
+
+        public Cita EncontrarCitaPorFecha(DateTime fecha)
+        {
+            return citasMedicas.Find(c => c.Fecha == fecha);
         }
 
         public bool ContienePersona(Persona persona)
@@ -64,21 +69,37 @@ namespace GestionHospital
 
             citasMedicas.Add(cita);
             pac.AñadirHistorialMedico(cita);
+            med.AñadirCitaMedica(cita);
         }
 
-        public void AñadirTratamientoPaciente(DateTime fecha, string tratamiento, string medicamento, Paciente pac)
+        public void AñadirTratamientoPaciente(DateTime fecha, string tratamiento, string medicamento, Medico med, Paciente pac)
         {
-            pac.AñadirHistorialMedico(new Tratamiento(fecha, tratamiento, medicamento));
+            pac.AñadirHistorialMedico(new Tratamiento(fecha,  med, tratamiento, medicamento));
         }
 
-        public void AñadirDiagnosticoPaciente(DateTime fecha, string notas, Paciente pac)
+        public void AñadirDiagnosticoPaciente(DateTime fecha, string notas, Medico med, Paciente pac)
         {
-            pac.AñadirHistorialMedico(new Diagnostico(fecha, notas));
+            pac.AñadirHistorialMedico(new Diagnostico(fecha, med, notas));
         }
 
-        public void ModificarCitaMedica(DateTime fecha)
+        public void ModificarCitaMedica(Cita citaModificar, DateTime fechaNueva, Medico medNuevo = null, Paciente pacNuevo = null)
         {
-            Cita cita = citasMedicas.Find(c => c.Fecha == fecha);
+            Console.WriteLine(citaModificar.ToString());
+
+            citaModificar.ModificarCita(fechaNueva, medNuevo, pacNuevo);
+        }
+
+        public void EliminarCita(Cita citaEliminar)
+        {
+            citaEliminar.EliminarCita();
+            citasMedicas.Remove(citaEliminar);
+        }
+
+        public void EliminarPaciente(Paciente p)
+        {
+            personas.Remove(p);
+
+            p.EliminarseDelMedico();
         }
 
         public void ListarMedicos()
@@ -125,11 +146,18 @@ namespace GestionHospital
             }
         }
 
-        public void EliminarPaciente(Paciente p)
+        public void ListaCitas()
         {
-            personas.Remove(p);
-
-            p.EliminarseDelMedico();
+            foreach(Cita c in citasMedicas)
+            {
+                Console.WriteLine(c.ToString());
+            }
         }
+
+        public void ListaDeCitasDelMedico(Medico m)
+        {
+            Console.WriteLine(m.ListaDeCitasMedicas());
+        }
+
     }
 }
