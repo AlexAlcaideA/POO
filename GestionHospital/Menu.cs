@@ -547,6 +547,12 @@ Diagnostico:
             hospital.EliminarCita(tempCita);
         }
 
+        /// <summary>
+        /// Devuelve un ushort del valor que ponga el usuario por la consola.
+        /// Tambien se escribe en la consola la pregunta que se le hace
+        /// </summary>
+        /// <param name="pregunta"></param>
+        /// <returns></returns>
         private ushort? ObtenerAños(string pregunta)
         {
             Console.WriteLine(pregunta);
@@ -559,6 +565,11 @@ Diagnostico:
                 return null;
         }
 
+        /// <summary>
+        /// Se hace una pregunta y devuelve lo escrito en la consola.
+        /// </summary>
+        /// <param name="pregunta"></param>
+        /// <returns></returns>
         private string ObtenerTexto(string pregunta)
         {
             Console.WriteLine(pregunta);
@@ -566,6 +577,12 @@ Diagnostico:
             return Console.ReadLine();
         }
 
+        /// <summary>
+        /// Obtiene una fecha con un Console.ReadLine, de la cual se le hace un TryParse.
+        /// Se le pasa un string que se muestra en consola que es lo que pregunta por la fecha
+        /// </summary>
+        /// <param name="pregunta"></param>
+        /// <returns></returns>
         private DateTime? ObtenerFecha(string pregunta)
         {
             Console.WriteLine(pregunta);
